@@ -12,41 +12,31 @@ from password import Password, Session
 
 ALINEA = ' (amnesia)> '
 
-CODE_LIST = [
-    'clap',
-    'nop',
-    'asdf',
-    'zxc',
-    'wer',
-    'fewq',
-    're',
-    'qwe'
-]
-
 session = Session()
 
-class Search(cmd.Cmd):
-    name = 'search'
+class Show(cmd.Cmd):
+    name = 'show'
 
     def do_cmd(self, line):
-        print(line)
+        if line in session.content.keys():
+            print(session.content[line].show())
 
     def complete_cmd(self, text, line, begidx, endidx):
         if not text:
-            completions = session.content[0]
+            completions = [k for k in session.content.keys()] 
         else:
-            completions = [ f
-                            for f in session.content[0]
-                            if f.startswith(text)
-                            ]
+            completions = [k
+                           for k in session.content.keys()
+                           if k.startswith(text)
+                          ]
         return completions
 
 class Ls(cmd.Cmd):
     name = 'ls'
     
     def do_cmd(self, line):
-        for c in session.content:
-            print(c.lab)
+        for k in session.content.keys():
+            print(k)
 
 
 
@@ -103,7 +93,7 @@ if __name__ == '__main__':
     
     shell = Shell()
     
-    shell.add_command(Search)
+    shell.add_command(Show)
     shell.add_command(Ls)
     print(shell.command_list)
 

@@ -4,7 +4,7 @@
 import base64, hashlib
 from getpass             import getpass
 from cryptography.fernet import Fernet
-
+from colorama import Fore
 
 CRYPTPATH = './test/'
 MARK      = '#netrisca#?!?#acsirten#'
@@ -51,6 +51,13 @@ class Password():
         else:
             pass
         
+    def show(self) -> str:
+        result = self.lab+'\n'
+        if self.url:
+            result += 'url     '+Fore.MAGENTA+self.url+Fore.RESET+'\n'
+        if self.com:
+            result += 'comment '+Fore.YELLOW+self.com+Fore.RESET+'\n'
+        return result
 
     def convert(self, name, key):
         compact = self.lab+MARK+self.url+MARK+self.com+MARK+self.has
@@ -62,8 +69,7 @@ class Session():
     passpath = CRYPTPATH
     passfile = 'essai'
     key      = None
-    content  = []
-    
+    content  = {}
     
     def __init__(self):
         self.key = self.get_key()
@@ -78,4 +84,4 @@ class Session():
     def recover(self):
         for l in read(self.generate_path()):
             p = Password(decrypt(self.key,l).split(MARK))        
-            self.content.append(p)
+            self.content.update({p.lab : p})
