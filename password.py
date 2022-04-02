@@ -1,10 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from ast import Pass
 import base64, hashlib
 from getpass             import getpass
-from pickle import MARK
 from cryptography.fernet import Fernet
 
 
