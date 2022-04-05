@@ -1,11 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
            
+           
+import os            
 from src.password import Password
 from src.utils import *
            
-class Session():
+class SessionEnvironment():
     name        = 'essai'
+    all_sec     = os.listdir(CRYPTPATH)
     prompt      = ALINEA
     passpath    = CRYPTPATH
     key         = None

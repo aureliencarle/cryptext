@@ -6,8 +6,7 @@ import cmd
 from pathlib import Path
 #print(Path.home())
 
-from src.password   import Password 
-from src.session    import Session
+from src.session    import SessionEnvironment
 
 from src.commands   import *
 
@@ -44,9 +43,10 @@ class Shell(cmd.Cmd):
 
 if __name__ == '__main__': 
 
-    session = Session()
+    session = SessionEnvironment()
     shell = Shell(session)
     shell.add_command(Show)
     shell.add_command(Ls)
     shell.add_command(Add)
+    shell.add_command(Session)
     shell.cmdloop()

@@ -2,21 +2,22 @@
 # -*- coding: utf-8 -*-
 
 from src.password   import Password
-from src.session    import Session
 from getpass        import getpass
 from src.utils      import *
 
-def build_options_list(line):
-    results = []
-    all_parameters = line.split()   
-    for p in all_parameters:
+def get_arguments(line):
+    arguments = {}
+    all_parameters = line.split()
+    arguments.update({'parameter' : all_parameters[0]})
+    options = []
+    for p in all_parameters[1:]:
         if p.startswith('-') or  p.startswith('--'):
-            results.append(p)
-    return results 
+            options.append(p)
+    arguments.update({'options' : options})
+    return arguments
 
 class Command():
-    
-            
+
     def do_cmd(self, line):
         pass
     def complete_cmd(self, text, line, begidx, endidx):
@@ -29,17 +30,14 @@ class Show(Command):
     name = 'show'
 
     def do_cmd(self, line):
-        label  = None
-        secure = True
-        list_params = line.split()
-        label = list_params[0]
-        
-        options = build_options_list(line)
-        if '--no-secure' in options:
+        secure  = True
+        arguments = get_arguments(line)
+                
+        if '--no-secure' in arguments['options']:
             secure = False
                         
-        if label in self.session.content.keys():
-            self.session.content[label].show(secure)
+        if arguments['parameter'] in self.session.content.keys():
+            self.session.content[arguments['parameter']].show(secure)
 
     def complete_cmd(self, text, line, begidx, endidx):
         if not text:
@@ -90,3 +88,13 @@ class Add(Command):
                 tentative -= 1
         del password
         self.session.recover(Password)
+
+
+class Session:
+    name = 'session'
+    
+    def do_cmd(self, line):
+        arguments = get_arguments(line)
+        
+        if arguments['parameter'] == 'switch':
+            col_print(self.session.all_sec)
