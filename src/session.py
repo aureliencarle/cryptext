@@ -2,25 +2,54 @@
 # -*- coding: utf-8 -*-
            
            
-import os            
+from getpass import getpass
+import os
 from src.password import Password
 from src.utils import *
-           
+
+
 class SessionEnvironment():
-    name        = 'essai'
-    all_sec     = os.listdir(CRYPTPATH)
+    name        = None
+    files       = os.listdir(CRYPTPATH)
     prompt      = ALINEA
     passpath    = CRYPTPATH
     key         = None
-    content     = {}
+    content     = {}  
     
-    def __init__(self):
-        self.update()
+    def start(self, session_name=None):
+        if session_name != '':
+            if session_name in self.files:
+                self.name = session_name
+            else:
+                Utils.print(' -- file not found --')
+                creation = Utils.input('Do you want to create it ? [yes] : ')
+                if creation == 'yes':
+                    self.create(session_name)
+                    self.start(session_name)
+                return False
+            passwd = getpass('[passphrase] > ')
+            try:
+                self.update(passwd)
+            except:
+                self.name = None
+                Utils.print(' -- wrong file key --')
+                return False
+            return True
+        else:
+            Utils.print('Nothing to start')
+            return False
     
-    def update(self):
+    def create(self, name):        
+        if not os.path.exists(self.passpath+'/'+name):
+            with open(self.passpath+'/'+name, 'w'): pass
+        else:
+            Utils.print('file already exist')
+        self.files = os.listdir(CRYPTPATH)
+
+    def update(self, password):
         self.prompt = '('+self.name+') '+ALINEA 
-        self.key = self.get_key()
-        self.recover(Password)
+        self.key = self.get_key(password)
+        self.recover()
     
     def get_key(self, password = 'as'):
         return generate_hash_key(password)
@@ -28,13 +57,20 @@ class SessionEnvironment():
     def generate_path(self):
         return self.passpath+'/'+self.name
 
-    def recover(self, object):
+    def recover(self, object=Password):
         self.content.clear()
         for l in read(self.generate_path()):
             p = object(decrypt(self.key,l).split(MARK))        
             self.content.update({p.lab : p})
             
     def log(self):
-        print('#######################')
-        print('# Session : '+self.name)
-        print('#######################')
+        if self.name is not None:    
+            Utils.print('#=======================================')
+            Utils.print('#')
+            Utils.print('# Session loaded : '+self.name)
+            Utils.print('#')
+            Utils.print('#=======================================')
+        else:
+            Utils.print()
+            Utils.print('No session is loaded !')
+            Utils.print()

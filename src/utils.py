@@ -4,13 +4,12 @@
 import base64, hashlib
 from cryptography.fernet    import Fernet
 from colorama               import Fore
+from pathlib                import Path
 
-CRYPTPATH = './test/'
+CRYPTPATH = str(Path.home())+'/.cryptext/'
 MARK      = '#netrisca#?!?#acsirten#'
-ALINEA = 'cryptext > '
-
-def deline(text):
-    return '\033[1A'+text+'\033[K'
+ALINEA    = 'cryptext > '
+INDENT    = 4
 
 def generate_hash_key(clear_pass):
     encoded_pass = clear_pass.encode("utf-8") 
@@ -40,30 +39,42 @@ def write(name, key, text):
         
 
 def get_entry(input_text, space, default_text='none'):
-    result = input(' ['+input_text+']'+space+' -> ') or default_text
+    result = Utils.input('['+input_text+']'+space+' -> ') or default_text
     return result
 
-def colored(intro, text, color):
-    return intro+color+text+Fore.RESET
 
-def col_print(lines, term_width=80, indent=2, pad=10):
-  n_lines = len(lines)
-  if n_lines == 0:
-    return
+class Utils():
 
-  col_width = max(len(line) for line in lines)
-  n_cols = int((term_width + pad - indent)/(col_width + pad))
-  n_cols = min(n_lines, max(1, n_cols))
+    def deline(text):
+        return '\033[1A'+text+'\033[K'
 
-  col_len = int(n_lines/n_cols) + (0 if n_lines % n_cols == 0 else 1)
-  if (n_cols - 1) * col_len >= n_lines:
-    n_cols -= 1
+    def colored(intro, text, color):
+        return intro+color+text+Fore.RESET
+    
+    def print(text = '', indent=INDENT):
+        print(' '*indent+text)
 
-  cols = [lines[i*col_len : i*col_len + col_len] for i in range(n_cols)]
+    def input(text='', indent=INDENT):
+        return input(' '*indent+text)
 
-  rows = list(zip(*cols))
-  rows_missed = zip(*[col[len(rows):] for col in cols[:-1]])
-  rows.extend(rows_missed)
+    def col_print(lines, term_width=80, indent=INDENT, pad=10):
+        n_lines = len(lines)
+        if n_lines == 0:
+            return
 
-  for row in rows:
-    print(" "*indent + (" "*pad).join(line.ljust(col_width) for line in row))
+        col_width = max(len(line) for line in lines)
+        n_cols = int((term_width + pad - indent)/(col_width + pad))
+        n_cols = min(n_lines, max(1, n_cols))
+
+        col_len = int(n_lines/n_cols) + (0 if n_lines % n_cols == 0 else 1)
+        if (n_cols - 1) * col_len >= n_lines:
+            n_cols -= 1
+
+        cols = [lines[i*col_len : i*col_len + col_len] for i in range(n_cols)]
+
+        rows = list(zip(*cols))
+        rows_missed = zip(*[col[len(rows):] for col in cols[:-1]])
+        rows.extend(rows_missed)
+
+        for row in rows:
+            print(" "*indent + (" "*pad).join(line.ljust(col_width) for line in row))

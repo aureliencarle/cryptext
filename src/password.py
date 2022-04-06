@@ -15,24 +15,26 @@ class Password():
             self.lab = info[0]
             self.url = info[1]
             self.com = info[2]
-            self.usr = None
-            self.has = info[3]
+            self.usr = info[3]
+            self.has = info[4]
         else:
             pass
         
     def show(self, is_secure=True) -> None:
-        print(self.lab)
+        Utils.print(self.lab)
         if self.url:
-            print(colored('url     ', self.url, Fore.MAGENTA))
+            Utils.print(Utils.colored('url     ', self.url, Fore.MAGENTA))
         if self.com:
-            print(colored('comment ', self.com, Fore.YELLOW))
+            Utils.print(Utils.colored('comment ', self.com, Fore.YELLOW))
+        if self.usr:
+            Utils.print(Utils.colored('usr     ', self.usr, Fore.CYAN))
         if is_secure:
-            blind = input(colored('pass    ',self.has, Fore.RED))
-            print(deline('--- Mischief Managed! ---'))
+            blind = Utils.input(Utils.colored('pass    ',self.has, Fore.RED))
+            Utils.print(Utils.deline('--- Mischief Managed! ---'))
         else:
-            print(colored('pass    ', self.has, Fore.RED))
+            Utils.print(Utils.colored('pass    ', self.has, Fore.RED))
 
     def convert(self, name, key):
-        compact = self.lab+MARK+self.url+MARK+self.com+MARK+self.has
+        compact = self.lab+MARK+self.url+MARK+self.com+MARK+self.usr+MARK+self.has
         write(name, key, compact)
     
