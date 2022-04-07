@@ -9,7 +9,7 @@ class Password():
     com = None
     usr = None
     has = None
-    
+
     def __init__(self, info=None):
         if info:
             self.lab = info[0]
@@ -19,7 +19,7 @@ class Password():
             self.has = info[4]
         else:
             pass
-        
+
     def show(self, is_secure=True) -> None:
         Utils.print(self.lab)
         if self.url:
