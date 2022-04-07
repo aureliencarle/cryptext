@@ -6,29 +6,22 @@ class Show:
     @staticmethod
     def do(shell: Shell, line: str):
         try:
-            secure = True
+            secure = '--no-secure' not in arguments['options']
             arguments = shell.get_arguments(line)
-
-            if '--no-secure' in arguments['options']:
-                secure = False
 
             if arguments['parameter'] in shell.session.content.keys():
                 shell.session.content[arguments['parameter']].show(secure)
 
-        except:
+        except ExceptionType:
             Utils.print('error with command see usage below :')
-            shell.help_show()
+            Show.help(shell)
 
     @staticmethod
     def complete(shell: Shell, text: str, line: str, begidx: str, endidx: str):
-        if not text:
-            completions = [k for k in shell.session.content.keys()]
-        else:
-            completions = [k
-                           for k in shell.session.content.keys()
-                           if k.startswith(text)
-                          ]
-        return completions
+        return [
+            k for k in shell.session.content.keys()
+            if not text or k.startswith(text)
+        ]
 
     @staticmethod
     def help(shell: Shell):

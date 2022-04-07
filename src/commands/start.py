@@ -5,14 +5,14 @@ class Start:
 
     @staticmethod
     def do(shell: Shell, line: str):
-        if line != '':
-            arguments = shell.get_arguments(line)
-            if shell.session.start(arguments['parameter']):
-                shell.prompt = shell.session.prompt
-            else:
-                shell.help_start()
+        if not line:
+            Start.help(shell)
+            return
+        arguments = shell.get_arguments(line)
+        if shell.session.start(arguments['parameter']):
+            shell.prompt = shell.session.prompt
         else:
-            shell.help_start()
+            Start.help(shell)
 
     @staticmethod
     def complete(shell: Shell, text: str, line: str, begidx: str, endidx: str):

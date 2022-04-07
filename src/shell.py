@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 import cmd
-import os
 
 from src.password   import Password
 from src.utils      import *
@@ -17,18 +16,20 @@ class Shell(cmd.Cmd):
         self.session    = session
         self.prompt     = self.session.prompt
 
+    def exit(exit_code: int=0) -> None:
+        exit(exit_code)
+
     def get_arguments(self, line):
         arguments = {}
         all_parameters = line.split()
         arguments.update({'parameter' : all_parameters[0]})
-        options = []
-        for p in all_parameters[1:]:
-            if p.startswith('-') or  p.startswith('--'):
-                options.append(p)
+        options = [
+            p for p in all_parameters[1:] if p.startswith('-')
+        ]
         arguments.update({'options' : options})
         return arguments
 
-    # Needed to not repeat the last sucess command if you spam retrun ;)
+    # Needed to not repeat the last sucess command if you spam return ;)
     def emptyline(self):
         pass
 
