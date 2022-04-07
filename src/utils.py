@@ -1,18 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-           
+
 import base64, hashlib
 from cryptography.fernet    import Fernet
 from colorama               import Fore
-from pathlib                import Path
 
-CRYPTPATH = str(Path.home())+'/.cryptext/'
 MARK      = '#netrisca#?!?#acsirten#'
 ALINEA    = 'cryptext > '
 INDENT    = 4
 
 def generate_hash_key(clear_pass):
-    encoded_pass = clear_pass.encode("utf-8") 
+    encoded_pass = clear_pass.encode("utf-8")
     hash_key     = hashlib.md5(encoded_pass).hexdigest()
     return base64.urlsafe_b64encode(hash_key.encode("utf-8"))
 
@@ -30,13 +28,13 @@ def read(name):
     with open(name, 'rb') as encrypted_file:
         text = encrypted_file.read()
         return text.split()
-    
+
 
 def write(name, key, text):
     with open(name, 'ab') as encrypted_file:
         encrypted_file.write('\n'.encode('utf-8'))
         encrypted_file.write(crypt(key, text))
-        
+
 
 def get_entry(input_text, space, default_text='none'):
     result = Utils.input('['+input_text+']'+space+' -> ') or default_text
@@ -50,7 +48,7 @@ class Utils():
 
     def colored(intro, text, color):
         return intro+color+text+Fore.RESET
-    
+
     def print(text = '', indent=INDENT):
         print(' '*indent+text)
 
