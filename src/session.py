@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-           
-           
+
+
 from getpass import getpass
 import os
 from src.password import Password
 from src.utils import *
+from src.cryptpath import CRYPTPATH
 
 
 class SessionEnvironment():
@@ -14,8 +15,8 @@ class SessionEnvironment():
     prompt      = ALINEA
     passpath    = CRYPTPATH
     key         = None
-    content     = {}  
-    
+    content     = {}
+
     def start(self, session_name=None):
         if session_name != '':
             if session_name in self.files:
@@ -38,8 +39,8 @@ class SessionEnvironment():
         else:
             Utils.print('Nothing to start')
             return False
-    
-    def create(self, name):        
+
+    def create(self, name):
         if not os.path.exists(self.passpath+'/'+name):
             with open(self.passpath+'/'+name, 'w'): pass
         else:
@@ -47,24 +48,24 @@ class SessionEnvironment():
         self.files = os.listdir(CRYPTPATH)
 
     def update(self, password):
-        self.prompt = '('+self.name+') '+ALINEA 
+        self.prompt = '('+self.name+') '+ALINEA
         self.key = self.get_key(password)
         self.recover()
-    
+
     def get_key(self, password = 'as'):
         return generate_hash_key(password)
-    
+
     def generate_path(self):
         return self.passpath+'/'+self.name
 
     def recover(self, object=Password):
         self.content.clear()
         for l in read(self.generate_path()):
-            p = object(decrypt(self.key,l).split(MARK))        
+            p = object(decrypt(self.key,l).split(MARK))
             self.content.update({p.lab : p})
-            
+
     def log(self):
-        if self.name is not None:    
+        if self.name is not None:
             Utils.print('#=======================================')
             Utils.print('#')
             Utils.print('# Session loaded : '+self.name)
