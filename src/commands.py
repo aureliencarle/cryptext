@@ -12,7 +12,7 @@ from src.utils      import *
 class Shell(cmd.Cmd):
     prompt  = ALINEA
     session = None
-    
+
     def __init__(self, session) -> None:
         super().__init__()
         self.session    = session
@@ -55,10 +55,10 @@ class Shell(cmd.Cmd):
 
             if '--no-secure' in arguments['options']:
                 secure = False
-                            
+
             if arguments['parameter'] in self.session.content.keys():
                 self.session.content[arguments['parameter']].show(secure)
-        
+
         except:
             Utils.print('error with command see usage below :')
             self.help_show()
@@ -86,8 +86,8 @@ class Shell(cmd.Cmd):
             password = Password()
             password.lab = get_entry('label','  ')
             password.url = get_entry('url','    ')
-            password.com = get_entry('comment', '')        
-            password.usr = get_entry('usr', '    ')                
+            password.com = get_entry('comment', '')
+            password.usr = get_entry('usr', '    ')
             tentative = 2
             while tentative != -1:
                 pas = getpass(' '*INDENT+'pass    : ')
@@ -124,7 +124,7 @@ class Shell(cmd.Cmd):
         else:
             self.help_start()
         
-    def complete_start(self, text, line, begidx, endidx):    
+    def complete_start(self, text, line, begidx, endidx):
         if not text:
             completions = [k for k in self.session.files] 
         else:

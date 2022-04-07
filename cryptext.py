@@ -8,7 +8,7 @@ from src.session    import SessionEnvironment
 from src.commands   import Shell
 
 
-if __name__ == '__main__': 
+if __name__ == '__main__':
 
     session = SessionEnvironment()
     shell = Shell(session)

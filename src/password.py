@@ -37,4 +37,3 @@ class Password():
     def convert(self, name, key):
         compact = self.lab+MARK+self.url+MARK+self.com+MARK+self.usr+MARK+self.has
         write(name, key, compact)
-    
