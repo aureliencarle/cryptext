@@ -12,7 +12,7 @@ class Show:
             if arguments['parameter'] in shell.session.content.keys():
                 shell.session.content[arguments['parameter']].show(secure)
 
-        except ExceptionType:
+        except:
             Utils.print('error with command see usage below :')
             Show.help(shell)
 
