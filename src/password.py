@@ -36,4 +36,4 @@ class Password():
 
     def convert(self, name, key):
         compact = self.lab+Geometry.MARK+self.url+Geometry.MARK+self.com+Geometry.MARK+self.usr+Geometry.MARK+self.has
-        write(name, key, compact)
+        Crypt.write(name, key, compact)
