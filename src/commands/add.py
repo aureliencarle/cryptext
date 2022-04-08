@@ -42,4 +42,4 @@ class Add:
 
     @staticmethod
     def help(shell: Shell):
-        io.print('you need a session to add a pass')
+        Io.print('you need a session to add a pass')

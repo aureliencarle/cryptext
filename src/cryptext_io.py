@@ -10,18 +10,23 @@ class Geometry:
 
 class Io:
 
+    @staticmethod
     def deline(text):
         return '\033[1A'+text+'\033[K'
 
+    @staticmethod
     def colored(intro, text, color):
         return intro+color+text+Fore.RESET
 
+    @staticmethod
     def print(text = '', indent=Geometry.INDENT):
         print(' '*indent+text)
 
+    @staticmethod
     def input(text='', indent=Geometry.INDENT):
         return input(' '*indent+text)
 
+    @staticmethod
     def col_print(lines, term_width=80, indent=Geometry.INDENT, pad=10):
         n_lines = len(lines)
         if n_lines == 0:
