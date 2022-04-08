@@ -69,10 +69,10 @@ class SessionEnvironment():
         if self.name is not None:
             Io.print('#=======================================')
             Io.print('#')
-            Io.print('# SessIon loaded : '+self.name)
+            Io.print('# Session loaded : '+self.name)
             Io.print('#')
             Io.print('#=======================================')
         else:
             Io.print()
-            Io.print('No sessIon is loaded !')
+            Io.print('No session is loaded !')
             Io.print()
