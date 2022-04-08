@@ -24,8 +24,8 @@ class SessionEnvironment():
                 self.name = session_name
             else:
                 Io.print(' -- file not found --')
-                creatIon = Io.input('Do you want to create it ? [yes] : ')
-                if creatIon == 'yes':
+                creation = Io.input('Do you want to create it ? [yes] : ')
+                if creation == 'yes':
                     self.create(session_name)
                     self.start(session_name)
                 return False
