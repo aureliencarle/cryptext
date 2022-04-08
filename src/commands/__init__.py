@@ -3,7 +3,7 @@
 
 from src.commands.ls import Ls
 from src.commands.cat import Cat
-from src.commands.add import Add
+from src.commands.touch import Touch
 from src.commands.cd import Cd
 from src.commands.mkdir import Mkdir
 from src.commands.exit import Exit

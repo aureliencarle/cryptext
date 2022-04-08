@@ -6,7 +6,7 @@ from src.shell import Shell
 from src.commands import (
     Ls,
     Cat,
-    Add,
+    Touch,
     Mkdir,
     Cd,
     Exit
@@ -15,7 +15,7 @@ from src.commands import (
 def main():
     Shell.register(Ls)
     Shell.register(Cat)
-    Shell.register(Add)
+    Shell.register(Touch)
     Shell.register(Mkdir)
     Shell.register(Cd)
     Shell.register(Exit)
