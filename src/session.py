@@ -11,6 +11,7 @@ from src.password import Password
 from src.utils import *
 from src.cryptpath import CRYPTPATH
 
+from src.cryptext_io import Geometry, Io
 
 class SessionEnvironment():
     name        = None
@@ -25,8 +26,8 @@ class SessionEnvironment():
             if session_name in self.files:
                 self.name = session_name
             else:
-                Utils.print(' -- file not found --')
-                creation = Utils.input('Do you want to create it ? [yes] : ')
+                Io.print(' -- file not found --')
+                creation = Io.input('Do you want to create it ? [yes] : ')
                 if creation == 'yes':
                     self.create(session_name)
                     self.start(session_name)
@@ -36,18 +37,18 @@ class SessionEnvironment():
                 self.update(passwd)
             except cryptography.fernet.InvalidToken:
                 self.name = None
-                Utils.print(' -- wrong file key --')
+                Io.print(' -- wrong file key --')
                 return False
             return True
         else:
-            Utils.print('Nothing to start')
+            Io.print('Nothing to start')
             return False
 
     def create(self, name):
         if not os.path.exists(self.passpath+'/'+name):
             with open(self.passpath+'/'+name, 'w'): pass
         else:
-            Utils.print('file already exist')
+            Io.print('file already exist')
         self.files = os.listdir(CRYPTPATH)
 
     def update(self, password):
@@ -69,12 +70,12 @@ class SessionEnvironment():
 
     def log(self):
         if self.name is not None:
-            Utils.print('#=======================================')
-            Utils.print('#')
-            Utils.print('# Session loaded : '+self.name)
-            Utils.print('#')
-            Utils.print('#=======================================')
+            Io.print('#=======================================')
+            Io.print('#')
+            Io.print('# Session loaded : '+self.name)
+            Io.print('#')
+            Io.print('#=======================================')
         else:
-            Utils.print()
-            Utils.print('No session is loaded !')
-            Utils.print()
+            Io.print()
+            Io.print('No session is loaded !')
+            Io.print()

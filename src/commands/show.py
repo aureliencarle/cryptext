@@ -1,5 +1,6 @@
 from src.shell import Shell
-from src.utils import Utils
+
+from src.cryptext_io import Io
 
 class Show:
 
@@ -25,4 +26,4 @@ class Show:
 
     @staticmethod
     def help(shell: Shell):
-        Utils.print('help :: show <label> [--no-secure]')
+        Io.print('help :: show <label> [--no-secure]')

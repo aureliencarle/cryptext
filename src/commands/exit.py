@@ -1,11 +1,11 @@
 from src.shell import Shell
-from src.utils import Utils
+from src.cryptext_io import Io
 
 class Exit:
 
     @staticmethod
     def do(shell: Shell, line: str):
-        Utils.print('You\'re quitting cryptext')
+        Io.print('You\'re quitting cryptext')
         shell.exit(0)
 
     @staticmethod

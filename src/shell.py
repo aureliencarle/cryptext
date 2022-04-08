@@ -6,6 +6,7 @@ import cmd
 from src.password   import Password
 from src.utils      import *
 
+from src.cryptext_io import Geometry
 
 class Shell(cmd.Cmd):
     prompt  = Geometry.ALINEA
