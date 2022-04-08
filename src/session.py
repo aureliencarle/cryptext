@@ -1,17 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-
 from getpass import getpass
 import os
 
 import cryptography
 
 from src.password import Password
-from src.utils import *
 from src.cryptpath import CRYPTPATH
 
-from src.cryptext_io import Geometry, Io
+from src.utils import Geometry, Io, Crypt
 
 class SessionEnvironment():
     name        = None
