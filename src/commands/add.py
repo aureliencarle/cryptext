@@ -4,7 +4,6 @@
 from src.shell import Shell
 from src.utils import Geometry, Io, Crypt
 from src.password import Password
-from getpass import getpass
 
 class Add:
 
@@ -18,21 +17,9 @@ class Add:
         password.url = Crypt.get_entry('url','    ')
         password.com = Crypt.get_entry('comment', '')
         password.usr = Crypt.get_entry('usr', '    ')
-        tentative = 2
-        while tentative != -1:
-            pas = getpass(' '*Geometry.INDENT+'pass    : ')
-            cof = getpass(' '*Geometry.INDENT+'confirm : ')
-            if (pas == cof):
-                password.has = pas
-                password.convert(shell.session.generate_path(), shell.session.key)
-                break
-            else:
-                if tentative == 0:
-                    Io.print('code not added !')
-                    break
-                else:
-                    Io.print('!!! password do not match !!! left '+str(tentative)+' try')
-                tentative -= 1
+        password.has = Crypt.pass_confirmation_ask('pass    : ')
+
+        password.convert(shell.session.generate_path(), shell.session.key)
         del password
         shell.session.recover(Password)
 

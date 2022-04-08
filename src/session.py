@@ -30,7 +30,7 @@ class SessionEnvironment():
                     self.create(session_name)
                     self.start(session_name)
                 return False
-            passwd = getpass('[passphrase] > ')
+            passwd = Crypt.pass_ask('[passphrase] > ')
             try:
                 self.update(passwd)
             except cryptography.fernet.InvalidToken:
