@@ -1,5 +1,8 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
 from src.shell import Shell
-from src.cryptext_io import Io
+from src.utils import Io
 
 class Ls:
 

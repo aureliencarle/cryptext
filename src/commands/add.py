@@ -1,8 +1,8 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
 from src.shell import Shell
-from src.utils import Crypt
-
-from src.cryptext_io import Geometry, Io
-
+from src.utils import Geometry, Io, Crypt
 from src.password import Password
 from getpass import getpass
 

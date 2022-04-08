@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from src.utils  import *
 from colorama import Fore
-from src.cryptext_io import Geometry, Io
+from src.utils import Geometry, Io
 
 class Password():
     lab = None
