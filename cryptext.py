@@ -5,7 +5,7 @@ from src.session import SessionEnvironment
 from src.shell import Shell
 from src.commands import (
     Ls,
-    Show,
+    Cat,
     Add,
     Create,
     Cd,
@@ -14,7 +14,7 @@ from src.commands import (
 
 def main():
     Shell.register(Ls)
-    Shell.register(Show)
+    Shell.register(Cat)
     Shell.register(Add)
     Shell.register(Create)
     Shell.register(Cd)
