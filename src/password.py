@@ -9,7 +9,7 @@ class Password():
     com = None
     usr = None
     has = None
-    
+
     def __init__(self, info=None):
         if info:
             self.lab = info[0]
@@ -19,7 +19,7 @@ class Password():
             self.has = info[4]
         else:
             pass
-        
+
     def show(self, is_secure=True) -> None:
         Utils.print(self.lab)
         if self.url:
@@ -35,5 +35,5 @@ class Password():
             Utils.print(Utils.colored('pass    ', self.has, Fore.RED))
 
     def convert(self, name, key):
-        compact = self.lab+MARK+self.url+MARK+self.com+MARK+self.usr+MARK+self.has
-        write(name, key, compact)
+        compact = self.lab+Geometry.MARK+self.url+Geometry.MARK+self.com+Geometry.MARK+self.usr+Geometry.MARK+self.has
+        Crypt.write(name, key, compact)

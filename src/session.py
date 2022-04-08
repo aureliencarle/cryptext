@@ -12,7 +12,7 @@ from src.cryptpath import CRYPTPATH
 class SessionEnvironment():
     name        = None
     files       = os.listdir(CRYPTPATH)
-    prompt      = ALINEA
+    prompt      = Geometry.ALINEA
     passpath    = CRYPTPATH
     key         = None
     content     = {}
@@ -48,20 +48,20 @@ class SessionEnvironment():
         self.files = os.listdir(CRYPTPATH)
 
     def update(self, password):
-        self.prompt = '('+self.name+') '+ALINEA
+        self.prompt = '('+self.name+') '+Geometry.ALINEA
         self.key = self.get_key(password)
         self.recover()
 
     def get_key(self, password = 'as'):
-        return generate_hash_key(password)
+        return Crypt.generate_hash_key(password)
 
     def generate_path(self):
         return self.passpath+'/'+self.name
 
     def recover(self, object=Password):
         self.content.clear()
-        for l in read(self.generate_path()):
-            p = object(decrypt(self.key,l).split(MARK))
+        for l in Crypt.read(self.generate_path()):
+            p = object(Crypt.decrypt(self.key,l).split(Geometry.MARK))
             self.content.update({p.lab : p})
 
     def log(self):
