@@ -6,8 +6,8 @@ class Show:
     @staticmethod
     def do(shell: Shell, line: str):
         try:
-            secure = '--no-secure' not in arguments['options']
             arguments = shell.get_arguments(line)
+            secure = '--no-secure' not in arguments['options']
 
             if arguments['parameter'] in shell.session.content.keys():
                 shell.session.content[arguments['parameter']].show(secure)
