@@ -16,7 +16,7 @@ class Shell(cmd.Cmd):
         self.session    = session
         self.prompt     = self.session.prompt
 
-    def exit(exit_code: int=0) -> None:
+    def exit(self, exit_code: int=0) -> None:
         exit(exit_code)
 
     def get_arguments(self, line):
