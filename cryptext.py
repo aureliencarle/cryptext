@@ -8,7 +8,7 @@ from src.commands import (
     Show,
     Add,
     Create,
-    Start,
+    Cd,
     Exit
 )
 
@@ -17,7 +17,7 @@ def main():
     Shell.register(Show)
     Shell.register(Add)
     Shell.register(Create)
-    Shell.register(Start)
+    Shell.register(Cd)
     Shell.register(Exit)
 
     session = SessionEnvironment()
