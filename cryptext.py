@@ -8,6 +8,7 @@ from src.commands import (
     Cat,
     Touch,
     Mkdir,
+    Rm,
     Cd,
     Exit
 )
@@ -17,6 +18,7 @@ def main():
     Shell.register(Cat)
     Shell.register(Touch)
     Shell.register(Mkdir)
+    Shell.register(Rm)
     Shell.register(Cd)
     Shell.register(Exit)
 
