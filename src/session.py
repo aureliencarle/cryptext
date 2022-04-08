@@ -53,15 +53,15 @@ class SessionEnvironment():
         self.recover()
 
     def get_key(self, password = 'as'):
-        return generate_hash_key(password)
+        return Crypt.generate_hash_key(password)
 
     def generate_path(self):
         return self.passpath+'/'+self.name
 
     def recover(self, object=Password):
         self.content.clear()
-        for l in read(self.generate_path()):
-            p = object(decrypt(self.key,l).split(MARK))
+        for l in Crypt.read(self.generate_path()):
+            p = object(Crypt.decrypt(self.key,l).split(Geometry.MARK))
             self.content.update({p.lab : p})
 
     def log(self):

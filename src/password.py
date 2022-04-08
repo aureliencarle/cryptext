@@ -35,5 +35,5 @@ class Password():
             Utils.print(Utils.colored('pass    ', self.has, Fore.RED))
 
     def convert(self, name, key):
-        compact = self.lab+MARK+self.url+MARK+self.com+MARK+self.usr+MARK+self.has
+        compact = self.lab+Geometry.MARK+self.url+Geometry.MARK+self.com+Geometry.MARK+self.usr+Geometry.MARK+self.has
         write(name, key, compact)

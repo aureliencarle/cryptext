@@ -36,7 +36,7 @@ class Crypt:
     def write(name, key, text):
         with open(name, 'ab') as encrypted_file:
             encrypted_file.write('\n'.encode('utf-8'))
-            encrypted_file.write(crypt(key, text))
+            encrypted_file.write(Crypt.crypt(key, text))
 
 
     def get_entry(input_text, space, default_text='none'):
