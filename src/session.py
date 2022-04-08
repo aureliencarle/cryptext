@@ -4,6 +4,9 @@
 
 from getpass import getpass
 import os
+
+import cryptography
+
 from src.password import Password
 from src.utils import *
 from src.cryptpath import CRYPTPATH
@@ -32,7 +35,7 @@ class SessionEnvironment():
             passwd = getpass('[passphrase] > ')
             try:
                 self.update(passwd)
-            except:
+            except cryptography.fernet.InvalidToken:
                 self.name = None
                 Io.print(' -- wrong file key --')
                 return False

@@ -13,8 +13,8 @@ class Show:
             if arguments['parameter'] in shell.session.content.keys():
                 shell.session.content[arguments['parameter']].show(secure)
 
-        except:
-            Io.print('error with command see usage below :')
+        except IndexError:
+            Utils.print('error with command see usage below :')
             Show.help(shell)
 
     @staticmethod
