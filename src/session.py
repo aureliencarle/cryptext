@@ -12,7 +12,7 @@ from src.cryptpath import CRYPTPATH
 class SessionEnvironment():
     name        = None
     files       = os.listdir(CRYPTPATH)
-    prompt      = ALINEA
+    prompt      = Geometry.ALINEA
     passpath    = CRYPTPATH
     key         = None
     content     = {}
@@ -48,7 +48,7 @@ class SessionEnvironment():
         self.files = os.listdir(CRYPTPATH)
 
     def update(self, password):
-        self.prompt = '('+self.name+') '+ALINEA
+        self.prompt = '('+self.name+') '+Geometry.ALINEA
         self.key = self.get_key(password)
         self.recover()
 

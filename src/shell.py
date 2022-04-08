@@ -8,7 +8,7 @@ from src.utils      import *
 
 
 class Shell(cmd.Cmd):
-    prompt  = ALINEA
+    prompt  = Geometry.ALINEA
     session = None
 
     def __init__(self, session) -> None:

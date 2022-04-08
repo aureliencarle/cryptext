@@ -52,13 +52,13 @@ class Utils:
     def colored(intro, text, color):
         return intro+color+text+Fore.RESET
 
-    def print(text = '', indent=INDENT):
+    def print(text = '', indent=Geometry.INDENT):
         print(' '*indent+text)
 
-    def input(text='', indent=INDENT):
+    def input(text='', indent=Geometry.INDENT):
         return input(' '*indent+text)
 
-    def col_print(lines, term_width=80, indent=INDENT, pad=10):
+    def col_print(lines, term_width=80, indent=Geometry.INDENT, pad=10):
         n_lines = len(lines)
         if n_lines == 0:
             return
