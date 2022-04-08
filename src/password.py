@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 
 from src.utils  import *
+from colorama import Fore
+from src.cryptext_io import Geometry, Io
 
 class Password():
     lab = None
@@ -21,18 +23,18 @@ class Password():
             pass
 
     def show(self, is_secure=True) -> None:
-        Utils.print(self.lab)
+        Io.print(self.lab)
         if self.url:
-            Utils.print(Utils.colored('url     ', self.url, Fore.MAGENTA))
+            Io.print(Io.colored('url     ', self.url, Fore.MAGENTA))
         if self.com:
-            Utils.print(Utils.colored('comment ', self.com, Fore.YELLOW))
+            Io.print(Io.colored('comment ', self.com, Fore.YELLOW))
         if self.usr:
-            Utils.print(Utils.colored('usr     ', self.usr, Fore.CYAN))
+            Io.print(Io.colored('usr     ', self.usr, Fore.CYAN))
         if is_secure:
-            blind = Utils.input(Utils.colored('pass    ',self.has, Fore.RED))
-            Utils.print(Utils.deline('--- Mischief Managed! ---'))
+            blind = Io.input(Io.colored('pass    ',self.has, Fore.RED))
+            Io.print(Io.deline('--- Mischief Managed! ---'))
         else:
-            Utils.print(Utils.colored('pass    ', self.has, Fore.RED))
+            Io.print(Io.colored('pass    ', self.has, Fore.RED))
 
     def convert(self, name, key):
         compact = self.lab+Geometry.MARK+self.url+Geometry.MARK+self.com+Geometry.MARK+self.usr+Geometry.MARK+self.has

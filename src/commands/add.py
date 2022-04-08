@@ -1,5 +1,8 @@
 from src.shell import Shell
-from src.utils import Utils, Geometry, Crypt
+from src.utils import Crypt
+
+from src.cryptext_io import Geometry, Io
+
 from src.password import Password
 from getpass import getpass
 
@@ -25,10 +28,10 @@ class Add:
                 break
             else:
                 if tentative == 0:
-                    Utils.print('code not added !')
+                    Io.print('code not added !')
                     break
                 else:
-                    Utils.print('!!! password do not match !!! left '+str(tentative)+' try')
+                    Io.print('!!! password do not match !!! left '+str(tentative)+' try')
                 tentative -= 1
         del password
         shell.session.recover(Password)
@@ -39,4 +42,4 @@ class Add:
 
     @staticmethod
     def help(shell: Shell):
-        Utils.print('you need a session to add a pass')
+        io.print('you need a session to add a pass')
