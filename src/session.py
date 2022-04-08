@@ -18,16 +18,16 @@ class SessionEnvironment():
     key         = None
     content     = {}
 
-    def start(self, sessIon_name=None):
-        if sessIon_name != '':
-            if sessIon_name in self.files:
-                self.name = sessIon_name
+    def start(self, session_name=None):
+        if session_name != '':
+            if session_name in self.files:
+                self.name = session_name
             else:
                 Io.print(' -- file not found --')
                 creatIon = Io.input('Do you want to create it ? [yes] : ')
                 if creatIon == 'yes':
-                    self.create(sessIon_name)
-                    self.start(sessIon_name)
+                    self.create(session_name)
+                    self.start(session_name)
                 return False
             passwd = getpass('[passphrase] > ')
             try:
