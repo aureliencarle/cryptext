@@ -3,7 +3,7 @@
 
 from src.shell import Shell
 
-class Create:
+class Mkdir:
 
     @staticmethod
     def do(shell: Shell, line: str):
