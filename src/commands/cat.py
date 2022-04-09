@@ -4,7 +4,7 @@
 from src.shell import Shell
 from src.utils import Io
 
-class Show:
+class Cat:
 
     @staticmethod
     def do(shell: Shell, line: str):
@@ -16,8 +16,8 @@ class Show:
                 shell.session.content[arguments['parameter']].show(secure)
 
         except IndexError:
-            Utils.print('error with command see usage below :')
-            Show.help(shell)
+            Io.print('error with command see usage below :')
+            Cat.help(shell)
 
     @staticmethod
     def complete(shell: Shell, text: str, line: str, begidx: str, endidx: str):

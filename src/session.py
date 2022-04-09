@@ -49,6 +49,14 @@ class SessionEnvironment():
             Io.print('file already exist')
         self.files = os.listdir(CRYPTPATH)
 
+    def destroy(self, name) -> None:
+        pass
+        #pathfile = self.passpath+'/'+self.name+'/'+name
+        #if os.path.exists(pathfile):
+        #    os.remove(pathfile)
+        #else:
+        #    Io.print('file does not exist')
+
     def update(self, password):
         self.prompt = '('+self.name+') '+Geometry.ALINEA
         self.key = self.get_key(password)
