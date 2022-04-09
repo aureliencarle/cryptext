@@ -39,5 +39,15 @@ class Password():
         if self.has is None:
             Io.print('No password, no save')
             return
-        compact = self.lab+Geometry.MARK+self.url+Geometry.MARK+self.com+Geometry.MARK+self.usr+Geometry.MARK+self.has
+        compact = ''.join([
+            self.lab,
+            Geometry.MARK,
+            self.url,
+            Geometry.MARK,
+            self.com,
+            Geometry.MARK,
+            self.usr,
+            Geometry.MARK,
+            self.has
+        ])
         Crypt.write(name, key, compact)

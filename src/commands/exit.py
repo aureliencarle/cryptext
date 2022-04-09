@@ -8,7 +8,7 @@ class Exit:
 
     @staticmethod
     def do(shell: Shell, line: str):
-        Io.print('You\'re quitting cryptext')
+        Io.print("You're quitting cryptext")
         shell.exit(0)
 
     @staticmethod

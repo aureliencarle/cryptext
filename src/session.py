@@ -43,14 +43,15 @@ class SessionEnvironment():
             return False
 
     def create(self, name):
-        if not os.path.exists(self.passpath+'/'+name):
-            with open(self.passpath+'/'+name, 'w'): pass
+        file = os.path.join(self.passpath, name)
+        if not os.path.exists(file):
+            with open(file, 'w'): pass
         else:
             Io.print('file already exist')
         self.files = os.listdir(CRYPTPATH)
 
     def update(self, password):
-        self.prompt = '('+self.name+') '+Geometry.ALINEA
+        self.prompt = f'({self.name}) {Geometry.ALINEA}'
         self.key = self.get_key(password)
         self.recover()
 
@@ -58,7 +59,7 @@ class SessionEnvironment():
         return Crypt.generate_hash_key(password)
 
     def generate_path(self):
-        return self.passpath+'/'+self.name
+        return os.path.join(self.passpath, self.name)
 
     def recover(self, object=Password):
         self.content.clear()
@@ -70,7 +71,7 @@ class SessionEnvironment():
         if self.name is not None:
             Io.print('#=======================================')
             Io.print('#')
-            Io.print('# Session loaded : '+self.name)
+            Io.print(f'# Session loaded : {self.name}')
             Io.print('#')
             Io.print('#=======================================')
         else:
