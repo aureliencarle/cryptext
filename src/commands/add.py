@@ -12,12 +12,18 @@ class Add:
         if shell.session.name is None:
             Add.help(shell)
             return
-        password = Password()
-        password.lab = Crypt.get_entry('label','  ')
-        password.url = Crypt.get_entry('url','    ')
-        password.com = Crypt.get_entry('comment', '')
-        password.usr = Crypt.get_entry('usr', '    ')
-        password.has = Crypt.pass_confirmation_ask('pass    : ')
+        lab = Crypt.get_entry('label','  ')
+        url = Crypt.get_entry('url','    ')
+        com = Crypt.get_entry('comment', '')
+        usr = Crypt.get_entry('usr', '    ')
+        has = Crypt.pass_confirmation_ask('pass    : ')
+        password = Password(
+            lab=lab,
+            url=url,
+            com=com,
+            usr=usr,
+            has=has
+        )
 
         password.convert(shell.session.generate_path(), shell.session.key)
         del password

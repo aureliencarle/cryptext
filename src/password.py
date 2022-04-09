@@ -11,15 +11,12 @@ class Password():
     usr = None
     has = None
 
-    def __init__(self, info=None):
-        if info:
-            self.lab = info[0]
-            self.url = info[1]
-            self.com = info[2]
-            self.usr = info[3]
-            self.has = info[4]
-        else:
-            pass
+    def __init__(self, lab, url, com, usr, has):
+        self.lab = lab
+        self.url = url
+        self.com = com
+        self.usr = usr
+        self.has = has
 
     def show(self, is_secure=True) -> None:
         Io.print(self.lab)
