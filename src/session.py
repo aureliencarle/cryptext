@@ -50,6 +50,14 @@ class SessionEnvironment():
             Io.print('file already exist')
         self.files = os.listdir(CRYPTPATH)
 
+    def destroy(self, name) -> None:
+        pass
+        #pathfile = self.passpath+'/'+self.name+'/'+name
+        #if os.path.exists(pathfile):
+        #    os.remove(pathfile)
+        #else:
+        #    Io.print('file does not exist')
+
     def update(self, password):
         self.prompt = f'({self.name}) {Geometry.ALINEA}'
         self.key = self.get_key(password)
@@ -64,8 +72,10 @@ class SessionEnvironment():
     def recover(self, object=Password):
         self.content.clear()
         for l in Crypt.read(self.generate_path()):
-            p = object(Crypt.decrypt(self.key,l).split(Geometry.MARK))
-            self.content.update({p.lab : p})
+            args = Crypt.decrypt(self.key,l).split(Geometry.MARK)
+            if args:
+                p = object(*args)
+                self.content.update({p.lab : p})
 
     def log(self):
         if self.name is not None:

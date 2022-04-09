@@ -2,13 +2,15 @@
 # -*- coding: utf-8 -*-
 
 from src.shell import Shell
+from src.utils import Io
 
-class Create:
+class Rm:
 
     @staticmethod
     def do(shell: Shell, line: str):
-        arguments = shell.get_arguments(line)
-        shell.session.create(arguments['parameter'])
+        if shell.session.name is None:
+            pass
+        shell.session.destroy(line)
 
     @staticmethod
     def complete(shell: Shell, text: str, line: str, begidx: str, endidx: str):

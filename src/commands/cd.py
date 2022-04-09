@@ -3,18 +3,18 @@
 
 from src.shell import Shell
 
-class Start:
+class Cd:
 
     @staticmethod
     def do(shell: Shell, line: str):
         if not line:
-            Start.help(shell)
+            Cd.help(shell)
             return
         arguments = shell.get_arguments(line)
         if shell.session.start(arguments['parameter']):
             shell.prompt = shell.session.prompt
         else:
-            Start.help(shell)
+            Cd.help(shell)
 
     @staticmethod
     def complete(shell: Shell, text: str, line: str, begidx: str, endidx: str):
