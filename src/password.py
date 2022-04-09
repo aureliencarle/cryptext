@@ -3,6 +3,7 @@
 
 from ast import Pass
 from dataclasses import dataclass
+from typing import List, Tuple
 from colorama import Fore
 
 from src.utils import Geometry, Crypt
@@ -43,18 +44,14 @@ class PasswordData:
 class PasswordDataRenderer:
     @staticmethod
     def show(pass_data: PasswordData, is_secure: bool) -> None:
-        Io.print(pass_data.lab)
-        PasswordDataRenderer.show_attribute(
-            init_text='url     ', attr=pass_data.url, color='magenta'
-        )
-        PasswordDataRenderer.show_attribute(
-            init_text='comment ', attr=pass_data.com, color='yellow'
-        )
-        PasswordDataRenderer.show_attribute(
-            init_text='usr     ', attr=pass_data.usr, color='cyan'
-        )
-        PasswordDataRenderer.show_attribute(
-            init_text='pass    ', attr=pass_data.passwd, color='red'
+        PasswordDataRenderer.show_attributes(
+            title=pass_data.lab,
+            attrs=[
+                (pass_data.url, 'url', 'magenta'),
+                (pass_data.com, 'comment', 'yellow'),
+                (pass_data.usr, 'user', 'cyan'),
+                (pass_data.passwd, 'pass', 'red'),
+            ],
         )
         if is_secure:
             PasswordDataRenderer.secure_line('--- Mischief Managed! ---')
@@ -64,6 +61,19 @@ class PasswordDataRenderer:
         Io.input(silent=True)
         Io.delete_line()
         Io.print(final_message)
+
+    @staticmethod
+    def show_attributes(title: str, attrs: List[Tuple[str, str, str]]) -> None:
+        max_name_size = max(len(name) for _, name, _ in attrs)
+        attrs = [
+            (attr, name.ljust(1 + max_name_size), color)
+            for attr, name, color in attrs
+        ]
+        Io.print(title)
+        for attr, name, color in attrs:
+            PasswordDataRenderer.show_attribute(
+                init_text=name, attr=attr, color=color
+            )
 
     @staticmethod
     def show_attribute(init_text: str, attr: str, color: str):
