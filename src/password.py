@@ -1,25 +1,18 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+from dataclasses import dataclass
 from colorama import Fore
+
 from src.utils import Geometry, Io, Crypt
 
+@dataclass
 class Password():
-    lab = None
-    url = None
-    com = None
-    usr = None
-    has = None
-
-    def __init__(self, info=None):
-        if info:
-            self.lab = info[0]
-            self.url = info[1]
-            self.com = info[2]
-            self.usr = info[3]
-            self.has = info[4]
-        else:
-            pass
+    lab : str
+    url : str
+    com : str
+    usr : str
+    has : str
 
     def show(self, is_secure=True) -> None:
         Io.print(self.lab)
