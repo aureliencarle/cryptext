@@ -4,8 +4,8 @@
 from src.shell import Shell
 from src.utils import Io
 
-class Cat:
 
+class Cat:
     @staticmethod
     def do(shell: Shell, line: str):
         try:
@@ -13,7 +13,7 @@ class Cat:
             secure = '--no-secure' not in arguments['options']
 
             if arguments['parameter'] in shell.session.content.keys():
-                shell.session.content[arguments['parameter']].show(secure)
+                shell.session.print_content(arguments['parameter'], secure)
 
         except IndexError:
             Io.print('error with command see usage below :')
@@ -22,7 +22,8 @@ class Cat:
     @staticmethod
     def complete(shell: Shell, text: str, line: str, begidx: str, endidx: str):
         return [
-            k for k in shell.session.content.keys()
+            k
+            for k in shell.session.content.keys()
             if not text or k.startswith(text)
         ]
 

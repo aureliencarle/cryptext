@@ -5,8 +5,9 @@ from getpass import getpass
 import os
 
 import cryptography
+from regex import W
 
-from src.password import PasswordData
+from src.password import PasswordData, PasswordDataIO
 from src.cryptpath import CRYPTPATH
 
 from src.utils import Geometry, Io, Crypt
@@ -31,7 +32,7 @@ class SessionEnvironment:
                     self.create(session_name)
                     self.start(session_name)
                 return False
-            passwd = Crypt.pass_ask('[passphrase] > ')
+            passwd = PasswordDataIO.input_password()
             try:
                 self.update(passwd)
             except cryptography.fernet.InvalidToken:
@@ -42,6 +43,10 @@ class SessionEnvironment:
         else:
             Io.print('Nothing to start')
             return False
+
+    def print_content(self, key: str, is_secure: bool) -> None:
+        """Print a content based on its key"""
+        PasswordDataIO.print(self.content[key], is_secure=is_secure)
 
     def create(self, name):
         file = os.path.join(self.passpath, name)
@@ -77,7 +82,7 @@ class SessionEnvironment:
             args = Crypt.decrypt(self.key, l).split(Geometry.MARK)
             if args:
                 p = object(*args)
-                self.content.update({p.lab: p})
+                self.content.update({p.label: p})
 
     def log(self):
         if self.name is not None:
