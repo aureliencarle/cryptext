@@ -5,6 +5,7 @@ from getpass import getpass
 import os
 
 import cryptography
+from regex import W
 
 from src.password import PasswordData, PasswordDataIO
 from src.cryptpath import CRYPTPATH
@@ -42,6 +43,10 @@ class SessionEnvironment:
         else:
             Io.print('Nothing to start')
             return False
+
+    def print_content(self, key: str, is_secure: bool) -> None:
+        """Print a content based on its key"""
+        PasswordDataIO.print(self.content[key], is_secure=is_secure)
 
     def create(self, name):
         file = os.path.join(self.passpath, name)

@@ -21,9 +21,6 @@ class PasswordData:
     user: str
     passwd: str
 
-    def show(self, is_secure: bool = True) -> None:
-        PasswordDataIO.print(self, is_secure=is_secure)
-
     def convert(self, name: str, key) -> None:
         if self.passwd is None:
             PasswordDataIO.print_no_password_message()
@@ -47,6 +44,7 @@ class PasswordData:
 class PasswordDataIO:
     @staticmethod
     def print(pass_data: PasswordData, is_secure: bool) -> None:
+        """Print the password's data"""
         PasswordDataIO.print_attributes(
             title=pass_data.label,
             attrs=[
@@ -60,7 +58,8 @@ class PasswordDataIO:
             PasswordDataIO.secure_line('--- Mischief Managed! ---')
 
     @staticmethod
-    def secure_line(final_message: str):
+    def secure_line(final_message: str) -> None:
+        """Delete the password line after an input"""
         Io.input(silent=True)
         Io.delete_line()
         Io.print(final_message)
@@ -69,6 +68,7 @@ class PasswordDataIO:
     def print_attributes(
         title: str, attrs: List[Tuple[str, str, str]]
     ) -> None:
+        """Print a list of password attributes"""
         attrs, names, colors = list(zip(*attrs))
         equalized_names = Format.equalize_rows(names, ' : ')
         Io.print(title)
@@ -78,17 +78,20 @@ class PasswordDataIO:
             )
 
     @staticmethod
-    def print_attribute(init_text: str, attr: str, color: str):
+    def print_attribute(init_text: str, attr: str, color: str) -> None:
+        """Print one password attribute"""
         if attr:
             Io.print(init_text, end='')
             Io.print(Format.colored(text=attr, color=color), indent=0)
 
     @staticmethod
-    def print_no_password_message():
+    def print_no_password_message() -> None:
+        """Print a message when no password can be created"""
         Io.print('No password, no save')
 
     @staticmethod
     def input() -> PasswordData:
+        """Input a PasswordData object"""
         label, url, com, user = PasswordDataIO.input_attributes(
             ['label', 'url', 'comment', 'user']
         )
@@ -99,6 +102,7 @@ class PasswordDataIO:
 
     @staticmethod
     def input_attributes(prompts: List[str]) -> List[str]:
+        """Input the attributes of PasswordData except the password"""
         equalized_prompts = Format.equalize_rows(prompts, ' : ')
         return [Io.input(prompt) for prompt in equalized_prompts]
 
@@ -108,7 +112,8 @@ class PasswordDataIO:
         prompt: str = '[passphrase]',
         confirm_prompt: str = '[confirm]',
         right_token: str = ' > ',
-    ) -> str:
+    ) -> Optional[str]:
+        """Input a password"""
         if confirm:
             prompt, confirm_prompt = Format.equalize_rows(
                 [prompt, confirm_prompt], right_str=right_token
@@ -120,7 +125,10 @@ class PasswordDataIO:
             return PasswordDataIO._ask(prompt + right_token)
 
     @staticmethod
-    def _ask(input_text: str, confirm_text: Optional[str] = None, n_trials=2):
+    def _ask(
+        input_text: str, confirm_text: Optional[str] = None, n_trials=2
+    ) -> Optional[str]:
+        """Internal function to input a password"""
         if confirm_text is not None:
             return PasswordDataIO._confirmation_ask(
                 input_text=input_text,
@@ -131,7 +139,8 @@ class PasswordDataIO:
             return getpass(input_text)
 
     @staticmethod
-    def _confirmation_ask(input_text, confirm_text, n_trials):
+    def _confirmation_ask(input_text, confirm_text, n_trials) -> Optional[str]:
+        """Internal function to input a password with confirmation"""
         if n_trials <= 0:
             Io.print('code not added !')
             return None
