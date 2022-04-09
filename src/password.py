@@ -25,7 +25,8 @@ class Password:
             Io.print(Io.colored('usr     ', self.usr, Fore.CYAN))
         if is_secure:
             blind = Io.input(Io.colored('pass    ', self.has, Fore.RED))
-            Io.print(Io.deline('--- Mischief Managed! ---'))
+            Io.delete_line()
+            Io.print('--- Mischief Managed! ---')
         else:
             Io.print(Io.colored('pass    ', self.has, Fore.RED))
 

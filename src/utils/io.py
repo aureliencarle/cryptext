@@ -12,8 +12,8 @@ class Geometry:
 
 class Io:
     @staticmethod
-    def deline(text):
-        return f'\033[1A{text}\033[K'
+    def delete_line():
+        return f'\033[1A\033[K'
 
     @staticmethod
     def colored(intro, text, color):
