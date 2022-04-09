@@ -5,7 +5,6 @@ from getpass import getpass
 import os
 
 import cryptography
-from regex import W
 
 from src.password import PasswordData, PasswordDataIO
 from src.cryptpath import CRYPTPATH
