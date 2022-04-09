@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+from ast import Pass
 from dataclasses import dataclass
 from colorama import Fore
 
@@ -9,37 +10,19 @@ from src.utils.io import Io, Format
 
 
 @dataclass
-class Password:
+class PasswordData:
     lab: str
     url: str
     com: str
     usr: str
-    has: str
+    passwd: str
 
-    def show(self, is_secure=True) -> None:
-        Io.print(self.lab)
-        if self.url:
-            Io.print('url     ', end='')
-            Io.print(Format.colored(self.url, 'magenta'))
-        if self.com:
-            Io.print('comment ', end='')
-            Io.print(Format.colored(self.com, 'yellow'))
-        if self.usr:
-            Io.print('usr     ', end='')
-            Io.print(Format.colored(self.com, 'cyan'))
-        if is_secure:
-            Io.print('pass    ', end='')
-            Io.print(Format.colored(self.has, 'red'))
-            Io.input()
-            Io.delete_line()
-            Io.print('--- Mischief Managed! ---')
-        else:
-            Io.print('pass    ', end='')
-            Io.print(Format.colored(self.has, 'red'))
+    def show(self, is_secure: bool = True) -> None:
+        PasswordDataRenderer.show(self, is_secure=is_secure)
 
-    def convert(self, name, key):
-        if self.has is None:
-            Io.print('No password, no save')
+    def convert(self, name: str, key) -> None:
+        if self.passwd is None:
+            PasswordDataRenderer.no_password_message()
             return
         compact = ''.join(
             [
@@ -51,7 +34,43 @@ class Password:
                 Geometry.MARK,
                 self.usr,
                 Geometry.MARK,
-                self.has,
+                self.passwd,
             ]
         )
         Crypt.write(name, key, compact)
+
+
+class PasswordDataRenderer:
+    @staticmethod
+    def show(pass_data: PasswordData, is_secure: bool) -> None:
+        Io.print(pass_data.lab)
+        PasswordDataRenderer.show_attribute(
+            init_text='url     ', attr=pass_data.url, color='magenta'
+        )
+        PasswordDataRenderer.show_attribute(
+            init_text='comment ', attr=pass_data.com, color='yellow'
+        )
+        PasswordDataRenderer.show_attribute(
+            init_text='usr     ', attr=pass_data.usr, color='cyan'
+        )
+        PasswordDataRenderer.show_attribute(
+            init_text='pass    ', attr=pass_data.passwd, color='red'
+        )
+        if is_secure:
+            PasswordDataRenderer.secure_line('--- Mischief Managed! ---')
+
+    @staticmethod
+    def secure_line(final_message: str):
+        Io.input(silent=True)
+        Io.delete_line()
+        Io.print(final_message)
+
+    @staticmethod
+    def show_attribute(init_text: str, attr: str, color: str):
+        if attr:
+            Io.print(init_text, end='')
+            Io.print(Format.colored(text=attr, color=color))
+
+    @staticmethod
+    def no_password_message():
+        Io.print('No password, no save')

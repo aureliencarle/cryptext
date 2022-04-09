@@ -6,18 +6,19 @@ import os
 
 import cryptography
 
-from src.password import Password
+from src.password import PasswordData
 from src.cryptpath import CRYPTPATH
 
 from src.utils import Geometry, Io, Crypt
 
-class SessionEnvironment():
-    name        = None
-    files       = os.listdir(CRYPTPATH)
-    prompt      = Geometry.ALINEA
-    passpath    = CRYPTPATH
-    key         = None
-    content     = {}
+
+class SessionEnvironment:
+    name = None
+    files = os.listdir(CRYPTPATH)
+    prompt = Geometry.ALINEA
+    passpath = CRYPTPATH
+    key = None
+    content = {}
 
     def start(self, session_name=None):
         if session_name != '':
@@ -45,17 +46,18 @@ class SessionEnvironment():
     def create(self, name):
         file = os.path.join(self.passpath, name)
         if not os.path.exists(file):
-            with open(file, 'w'): pass
+            with open(file, 'w'):
+                pass
         else:
             Io.print('file already exist')
         self.files = os.listdir(CRYPTPATH)
 
     def destroy(self, name) -> None:
         pass
-        #pathfile = self.passpath+'/'+self.name+'/'+name
-        #if os.path.exists(pathfile):
+        # pathfile = self.passpath+'/'+self.name+'/'+name
+        # if os.path.exists(pathfile):
         #    os.remove(pathfile)
-        #else:
+        # else:
         #    Io.print('file does not exist')
 
     def update(self, password):
@@ -63,19 +65,19 @@ class SessionEnvironment():
         self.key = self.get_key(password)
         self.recover()
 
-    def get_key(self, password = 'as'):
+    def get_key(self, password='as'):
         return Crypt.generate_hash_key(password)
 
     def generate_path(self):
         return os.path.join(self.passpath, self.name)
 
-    def recover(self, object=Password):
+    def recover(self, object=PasswordData):
         self.content.clear()
         for l in Crypt.read(self.generate_path()):
-            args = Crypt.decrypt(self.key,l).split(Geometry.MARK)
+            args = Crypt.decrypt(self.key, l).split(Geometry.MARK)
             if args:
                 p = object(*args)
-                self.content.update({p.lab : p})
+                self.content.update({p.lab: p})
 
     def log(self):
         if self.name is not None:

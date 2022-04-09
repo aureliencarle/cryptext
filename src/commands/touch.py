@@ -3,31 +3,25 @@
 
 from src.shell import Shell
 from src.utils import Geometry, Io, Crypt
-from src.password import Password
+from src.password import PasswordData
+
 
 class Touch:
-
     @staticmethod
     def do(shell: Shell, line: str):
         if shell.session.name is None:
             Touch.help(shell)
             return
-        lab = Crypt.get_entry('label','  ')
-        url = Crypt.get_entry('url','    ')
+        lab = Crypt.get_entry('label', '  ')
+        url = Crypt.get_entry('url', '    ')
         com = Crypt.get_entry('comment', '')
         usr = Crypt.get_entry('usr', '    ')
         has = Crypt.pass_confirmation_ask('pass    : ')
-        password = Password(
-            lab=lab,
-            url=url,
-            com=com,
-            usr=usr,
-            has=has
-        )
+        password = PasswordData(lab=lab, url=url, com=com, usr=usr, passwd=has)
 
         password.convert(shell.session.generate_path(), shell.session.key)
         del password
-        shell.session.recover(Password)
+        shell.session.recover(PasswordData)
 
     @staticmethod
     def complete(shell: Shell, text: str, line: str, begidx: str, endidx: str):

@@ -6,14 +6,15 @@ from colorama import Fore
 
 
 class Geometry:
-    MARK = '#netrisca#?!?#acsirten#'
-    ALINEA = 'cryptext > '
-    INDENT = 4
+    MARK: str = '#netrisca#?!?#acsirten#'
+    ALINEA: str = 'cryptext > '
+    INDENT: int = 4
 
 
 class Format:
     @staticmethod
     def colored(text: str, color: str) -> str:
+        """Apply color special characters to a string"""
         fore_color = getattr(Fore, color.upper())
         fore_reset = Fore.RESET
         return f'{fore_color}text{fore_reset}'
@@ -25,6 +26,7 @@ class Format:
         indent: int = Geometry.INDENT,
         pad: int = 10,
     ) -> str:
+        """Generate a pretty string from a list of rows, aligning columns."""
         n_lines = len(lines)
         if n_lines == 0:
             return ''
@@ -56,13 +58,31 @@ class Format:
 
 class Io:
     @staticmethod
-    def delete_line():
-        return f'\033[1A\033[K'
+    def print(text: str = '', indent: str = Geometry.INDENT, **kwargs) -> None:
+        """Print a text in the standard output"""
+        Io._print(' ' * indent + text, **kwargs)
 
     @staticmethod
-    def print(text='', indent=Geometry.INDENT, **kwargs):
-        print(' ' * indent + text, **kwargs)
+    def input(
+        text: str = '', indent: str = Geometry.INDENT, silent: bool = False
+    ) -> None:
+        """Ask an input to the user"""
+        res = Io._input(' ' * indent + text)
+        if silent:
+            Io.delete_line()
+        return res
 
     @staticmethod
-    def input(text='', indent=Geometry.INDENT):
-        return input(' ' * indent + text)
+    def delete_line() -> None:
+        """Delete the last line printed"""
+        Io._print('\033[A\033[K\033[A')
+
+    @staticmethod
+    def _print(*args, **kwargs):
+        """Print function that should be used internally in the Io class"""
+        print(*args, **kwargs)
+
+    @staticmethod
+    def _input(*args, **kwargs):
+        """Input function that should be used internally in the Io class"""
+        return input(*args, **kwargs)
