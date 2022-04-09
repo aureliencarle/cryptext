@@ -10,18 +10,21 @@ class Geometry:
     INDENT = 4
 
 
+class Format:
+    def colored(text, color):
+        fore_color = getattr(Fore, color.upper())
+        fore_reset = Fore.RESET
+        return f'{fore_color}text{fore_reset}'
+
+
 class Io:
     @staticmethod
     def delete_line():
         return f'\033[1A\033[K'
 
     @staticmethod
-    def colored(intro, text, color):
-        return ''.join([intro, color, text, Fore.RESET])
-
-    @staticmethod
-    def print(text='', indent=Geometry.INDENT):
-        print(' ' * indent + text)
+    def print(text='', indent=Geometry.INDENT, **kwargs):
+        print(' ' * indent + text, **kwargs)
 
     @staticmethod
     def input(text='', indent=Geometry.INDENT):

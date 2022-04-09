@@ -4,7 +4,8 @@
 from dataclasses import dataclass
 from colorama import Fore
 
-from src.utils import Geometry, Io, Crypt
+from src.utils import Geometry, Crypt
+from src.utils.io import Io, Format
 
 
 @dataclass
@@ -18,17 +19,23 @@ class Password:
     def show(self, is_secure=True) -> None:
         Io.print(self.lab)
         if self.url:
-            Io.print(Io.colored('url     ', self.url, Fore.MAGENTA))
+            Io.print('url     ', end='')
+            Io.print(Format.colored(self.url, 'magenta'))
         if self.com:
-            Io.print(Io.colored('comment ', self.com, Fore.YELLOW))
+            Io.print('comment ', end='')
+            Io.print(Format.colored(self.com, 'yellow'))
         if self.usr:
-            Io.print(Io.colored('usr     ', self.usr, Fore.CYAN))
+            Io.print('usr     ', end='')
+            Io.print(Format.colored(self.com, 'cyan'))
         if is_secure:
-            blind = Io.input(Io.colored('pass    ', self.has, Fore.RED))
+            Io.print('pass    ', end='')
+            Io.print(Format.colored(self.has, 'red'))
+            Io.input()
             Io.delete_line()
             Io.print('--- Mischief Managed! ---')
         else:
-            Io.print(Io.colored('pass    ', self.has, Fore.RED))
+            Io.print('pass    ', end='')
+            Io.print(Format.colored(self.has, 'red'))
 
     def convert(self, name, key):
         if self.has is None:
