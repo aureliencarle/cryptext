@@ -6,13 +6,14 @@ from colorama import Fore
 
 from src.utils import Geometry, Io, Crypt
 
+
 @dataclass
-class Password():
-    lab : str
-    url : str
-    com : str
-    usr : str
-    has : str
+class Password:
+    lab: str
+    url: str
+    com: str
+    usr: str
+    has: str
 
     def show(self, is_secure=True) -> None:
         Io.print(self.lab)
@@ -23,7 +24,7 @@ class Password():
         if self.usr:
             Io.print(Io.colored('usr     ', self.usr, Fore.CYAN))
         if is_secure:
-            blind = Io.input(Io.colored('pass    ',self.has, Fore.RED))
+            blind = Io.input(Io.colored('pass    ', self.has, Fore.RED))
             Io.print(Io.deline('--- Mischief Managed! ---'))
         else:
             Io.print(Io.colored('pass    ', self.has, Fore.RED))
@@ -32,5 +33,17 @@ class Password():
         if self.has is None:
             Io.print('No password, no save')
             return
-        compact = self.lab+Geometry.MARK+self.url+Geometry.MARK+self.com+Geometry.MARK+self.usr+Geometry.MARK+self.has
+        compact = ''.join(
+            [
+                self.lab,
+                Geometry.MARK,
+                self.url,
+                Geometry.MARK,
+                self.com,
+                Geometry.MARK,
+                self.usr,
+                Geometry.MARK,
+                self.has,
+            ]
+        )
         Crypt.write(name, key, compact)
