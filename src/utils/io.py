@@ -5,27 +5,27 @@ from colorama import Fore
 
 
 class Geometry:
-    MARK = "#netrisca#?!?#acsirten#"
-    ALINEA = "cryptext > "
+    MARK = '#netrisca#?!?#acsirten#'
+    ALINEA = 'cryptext > '
     INDENT = 4
 
 
 class Io:
     @staticmethod
     def deline(text):
-        return f"\033[1A{text}\033[K"
+        return f'\033[1A{text}\033[K'
 
     @staticmethod
     def colored(intro, text, color):
-        return "".join([intro, color, text, Fore.RESET])
+        return ''.join([intro, color, text, Fore.RESET])
 
     @staticmethod
-    def print(text="", indent=Geometry.INDENT):
-        print(" " * indent + text)
+    def print(text='', indent=Geometry.INDENT):
+        print(' ' * indent + text)
 
     @staticmethod
-    def input(text="", indent=Geometry.INDENT):
-        return input(" " * indent + text)
+    def input(text='', indent=Geometry.INDENT):
+        return input(' ' * indent + text)
 
     @staticmethod
     def col_print(lines, term_width=80, indent=Geometry.INDENT, pad=10):
@@ -51,6 +51,6 @@ class Io:
 
         for row in rows:
             print(
-                " " * indent
-                + (" " * pad).join(line.ljust(col_width) for line in row)
+                ' ' * indent
+                + (' ' * pad).join(line.ljust(col_width) for line in row)
             )
