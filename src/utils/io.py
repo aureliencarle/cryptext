@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+from typing import List
 from colorama import Fore
 
 
@@ -11,30 +12,22 @@ class Geometry:
 
 
 class Format:
-    def colored(text, color):
+    @staticmethod
+    def colored(text: str, color: str) -> str:
         fore_color = getattr(Fore, color.upper())
         fore_reset = Fore.RESET
         return f'{fore_color}text{fore_reset}'
 
-
-class Io:
     @staticmethod
-    def delete_line():
-        return f'\033[1A\033[K'
-
-    @staticmethod
-    def print(text='', indent=Geometry.INDENT, **kwargs):
-        print(' ' * indent + text, **kwargs)
-
-    @staticmethod
-    def input(text='', indent=Geometry.INDENT):
-        return input(' ' * indent + text)
-
-    @staticmethod
-    def col_print(lines, term_width=80, indent=Geometry.INDENT, pad=10):
+    def pretty_columns(
+        lines: List[str],
+        term_width: int = 80,
+        indent: int = Geometry.INDENT,
+        pad: int = 10,
+    ) -> str:
         n_lines = len(lines)
         if n_lines == 0:
-            return
+            return ''
 
         col_width = max(len(line) for line in lines)
         n_cols = int((term_width + pad - indent) / (col_width + pad))
@@ -52,8 +45,24 @@ class Io:
         rows_missed = zip(*[col[len(rows) :] for col in cols[:-1]])
         rows.extend(rows_missed)
 
-        for row in rows:
-            print(
+        return '\n'.join(
+            [
                 ' ' * indent
                 + (' ' * pad).join(line.ljust(col_width) for line in row)
-            )
+                for row in rows
+            ]
+        )
+
+
+class Io:
+    @staticmethod
+    def delete_line():
+        return f'\033[1A\033[K'
+
+    @staticmethod
+    def print(text='', indent=Geometry.INDENT, **kwargs):
+        print(' ' * indent + text, **kwargs)
+
+    @staticmethod
+    def input(text='', indent=Geometry.INDENT):
+        return input(' ' * indent + text)
