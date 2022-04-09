@@ -5,12 +5,12 @@ from src.shell import Shell
 from src.utils import Geometry, Io, Crypt
 from src.password import Password
 
-class Add:
+class Touch:
 
     @staticmethod
     def do(shell: Shell, line: str):
         if shell.session.name is None:
-            Add.help(shell)
+            Touch.help(shell)
             return
         password = Password()
         password.lab = Crypt.get_entry('label','  ')

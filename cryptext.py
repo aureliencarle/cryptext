@@ -5,19 +5,21 @@ from src.session import SessionEnvironment
 from src.shell import Shell
 from src.commands import (
     Ls,
-    Show,
-    Add,
-    Create,
-    Start,
+    Cat,
+    Touch,
+    Mkdir,
+    Rm,
+    Cd,
     Exit
 )
 
 def main():
     Shell.register(Ls)
-    Shell.register(Show)
-    Shell.register(Add)
-    Shell.register(Create)
-    Shell.register(Start)
+    Shell.register(Cat)
+    Shell.register(Touch)
+    Shell.register(Mkdir)
+    Shell.register(Rm)
+    Shell.register(Cd)
     Shell.register(Exit)
 
     session = SessionEnvironment()
