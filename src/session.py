@@ -65,7 +65,6 @@ class SessionEnvironment():
         for l in Crypt.read(self.generate_path()):
             args = Crypt.decrypt(self.key,l).split(Geometry.MARK)
             if args:
-                print(args)
                 p = object(*args)
                 self.content.update({p.lab : p})
 
