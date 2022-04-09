@@ -1,37 +1,35 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+from typing import List
 from colorama import Fore
 
 
 class Geometry:
-    MARK = '#netrisca#?!?#acsirten#'
-    ALINEA = 'cryptext > '
-    INDENT = 4
+    MARK: str = '#netrisca#?!?#acsirten#'
+    ALINEA: str = 'cryptext > '
+    INDENT: int = 4
 
 
-class Io:
+class Format:
     @staticmethod
-    def deline(text):
-        return f'\033[1A{text}\033[K'
-
-    @staticmethod
-    def colored(intro, text, color):
-        return ''.join([intro, color, text, Fore.RESET])
-
-    @staticmethod
-    def print(text='', indent=Geometry.INDENT):
-        print(' ' * indent + text)
+    def colored(text: str, color: str) -> str:
+        """Apply color special characters to a string"""
+        fore_color = getattr(Fore, color.upper())
+        fore_reset = Fore.RESET
+        return f'{fore_color}text{fore_reset}'
 
     @staticmethod
-    def input(text='', indent=Geometry.INDENT):
-        return input(' ' * indent + text)
-
-    @staticmethod
-    def col_print(lines, term_width=80, indent=Geometry.INDENT, pad=10):
+    def pretty_columns(
+        lines: List[str],
+        term_width: int = 80,
+        indent: int = Geometry.INDENT,
+        pad: int = 10,
+    ) -> str:
+        """Generate a pretty string from a list of rows, aligning columns."""
         n_lines = len(lines)
         if n_lines == 0:
-            return
+            return ''
 
         col_width = max(len(line) for line in lines)
         n_cols = int((term_width + pad - indent) / (col_width + pad))
@@ -49,8 +47,42 @@ class Io:
         rows_missed = zip(*[col[len(rows) :] for col in cols[:-1]])
         rows.extend(rows_missed)
 
-        for row in rows:
-            print(
+        return '\n'.join(
+            [
                 ' ' * indent
                 + (' ' * pad).join(line.ljust(col_width) for line in row)
-            )
+                for row in rows
+            ]
+        )
+
+
+class Io:
+    @staticmethod
+    def print(text: str = '', indent: str = Geometry.INDENT, **kwargs) -> None:
+        """Print a text in the standard output"""
+        Io._print(' ' * indent + text, **kwargs)
+
+    @staticmethod
+    def input(
+        text: str = '', indent: str = Geometry.INDENT, silent: bool = False
+    ) -> None:
+        """Ask an input to the user"""
+        res = Io._input(' ' * indent + text)
+        if silent:
+            Io.delete_line()
+        return res
+
+    @staticmethod
+    def delete_line() -> None:
+        """Delete the last line printed"""
+        Io._print('\033[A\033[K\033[A')
+
+    @staticmethod
+    def _print(*args, **kwargs):
+        """Print function that should be used internally in the Io class"""
+        print(*args, **kwargs)
+
+    @staticmethod
+    def _input(*args, **kwargs):
+        """Input function that should be used internally in the Io class"""
+        return input(*args, **kwargs)
