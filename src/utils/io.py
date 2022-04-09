@@ -17,7 +17,13 @@ class Format:
         """Apply color special characters to a string"""
         fore_color = getattr(Fore, color.upper())
         fore_reset = Fore.RESET
-        return f'{fore_color}text{fore_reset}'
+        return f'{fore_color}{text}{fore_reset}'
+
+    @staticmethod
+    def equalize_rows(rows: List[str], right_str: str = '') -> List[str]:
+        """Fill rows with space so that all have the same length"""
+        max_row_size = max(len(row) for row in rows)
+        return [row.ljust(max_row_size) + right_str for row in rows]
 
     @staticmethod
     def pretty_columns(
