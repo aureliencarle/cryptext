@@ -4,7 +4,6 @@
 from ast import Pass
 from dataclasses import dataclass
 from typing import List, Tuple
-from colorama import Fore
 
 from src.utils import Geometry, Crypt
 from src.utils.io import Io, Format
