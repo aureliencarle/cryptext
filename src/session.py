@@ -18,7 +18,7 @@ class SessionEnvironment:
         self, crypt_path: str = CRYPTPATH, prompt: str = DisplayConfig.PROMPT
     ):
         self.name: str = None
-        self.prompt: str = DisplayConfig.PROMPT
+        self.prompt: str = prompt
         self.passpath: str = crypt_path
         self.files: List[str] = os.listdir(crypt_path)
         self.key: bytes = None
