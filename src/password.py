@@ -9,7 +9,7 @@ from typing import List, Optional, Tuple
 
 from click import confirm
 
-from src.utils import Geometry, Crypt
+from src.utils import DisplayConfig, Crypt
 from src.utils.io import Io, Format
 
 
@@ -25,18 +25,8 @@ class PasswordData:
         if self.passwd is None:
             PasswordDataIO.print_no_password_message()
             return
-        compact = ''.join(
-            [
-                self.label,
-                Geometry.MARK,
-                self.url,
-                Geometry.MARK,
-                self.com,
-                Geometry.MARK,
-                self.user,
-                Geometry.MARK,
-                self.passwd,
-            ]
+        compact = DisplayConfig.SEPARATOR.join(
+            [self.label, self.url, self.com, self.user, self.passwd]
         )
         Crypt.write(name, key, compact)
 
@@ -144,8 +134,8 @@ class PasswordDataIO:
         if n_trials <= 0:
             Io.print('code not added !')
             return None
-        pas = getpass(' ' * Geometry.INDENT + input_text)
-        cof = getpass(' ' * Geometry.INDENT + confirm_text)
+        pas = getpass(' ' * DisplayConfig.INDENT + input_text)
+        cof = getpass(' ' * DisplayConfig.INDENT + confirm_text)
         if pas == cof:
             return pas
         else:

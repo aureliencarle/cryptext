@@ -9,11 +9,11 @@ class Cat:
     @staticmethod
     def do(shell: Shell, line: str):
         try:
-            arguments = shell.get_arguments(line)
-            secure = '--no-secure' not in arguments['options']
+            parameter, options = shell.get_arguments(line)
+            secure = '--no-secure' not in options
 
-            if arguments['parameter'] in shell.session.content.keys():
-                shell.session.print_content(arguments['parameter'], secure)
+            if parameter in shell.session.content.keys():
+                shell.session.print_content(parameter, secure)
 
         except IndexError:
             Io.print('error with command see usage below :')

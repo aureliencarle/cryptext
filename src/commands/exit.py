@@ -4,12 +4,12 @@
 from src.shell import Shell
 from src.utils.io import Io
 
-class Exit:
 
+class Exit:
     @staticmethod
     def do(shell: Shell, line: str):
         Io.print("You're quitting cryptext")
-        shell.exit(0)
+        shell.close()
 
     @staticmethod
     def complete(shell: Shell, text: str, line: str, begidx: str, endidx: str):

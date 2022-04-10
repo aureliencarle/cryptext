@@ -5,9 +5,9 @@ from typing import List
 from colorama import Fore
 
 
-class Geometry:
-    MARK: str = '#netrisca#?!?#acsirten#'
-    ALINEA: str = 'cryptext > '
+class DisplayConfig:
+    SEPARATOR: str = '#netrisca#?!?#acsirten#'
+    PROMPT: str = 'cryptext > '
     INDENT: int = 4
 
 
@@ -29,7 +29,7 @@ class Format:
     def pretty_columns(
         lines: List[str],
         term_width: int = 80,
-        indent: int = Geometry.INDENT,
+        indent: int = DisplayConfig.INDENT,
         pad: int = 10,
     ) -> str:
         """Generate a pretty string from a list of rows, aligning columns."""
@@ -64,13 +64,17 @@ class Format:
 
 class Io:
     @staticmethod
-    def print(text: str = '', indent: str = Geometry.INDENT, **kwargs) -> None:
+    def print(
+        text: str = '', indent: str = DisplayConfig.INDENT, **kwargs
+    ) -> None:
         """Print a text in the standard output"""
         Io._print(' ' * indent + text, **kwargs)
 
     @staticmethod
     def input(
-        text: str = '', indent: str = Geometry.INDENT, silent: bool = False
+        text: str = '',
+        indent: str = DisplayConfig.INDENT,
+        silent: bool = False,
     ) -> None:
         """Ask an input to the user"""
         res = Io._input(' ' * indent + text)
@@ -82,6 +86,17 @@ class Io:
     def delete_line() -> None:
         """Delete the last line printed"""
         Io._print('\033[A\033[K\033[A')
+
+    @staticmethod
+    def ask_user_confirmation(prompt: str, default_str: str):
+        """Ask a confirmation to the user and return the answer"""
+        default_str = default_str.lower()
+        if default_str not in 'yn':
+            raise (NameError("Default string should be 'y' or 'n'."))
+        answer = (
+            Io.input(f'{prompt} [y/n, default={default_str}] ') or default_str
+        )
+        return 'y' == answer.lower()
 
     @staticmethod
     def _print(*args, **kwargs):
