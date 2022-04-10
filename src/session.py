@@ -92,7 +92,7 @@ class SessionEnvironment:
 
     def add_password(self, password: PasswordData):
         if password.label not in self.content.keys():
-            self.content.update({password.label: password})
+            self.content[password.label] = password
         else:
             Io.print(' -- label already exist --')
 
@@ -102,7 +102,7 @@ class SessionEnvironment:
             args = Crypt.decrypt(self.key, l).split(DisplayConfig.SEPARATOR)
             if args:
                 p = PasswordData(*args)
-                self.content.update({p.label: p})
+                self.content[p.label] = p
 
     def save(self):
         file = os.path.join(self.passpath, self.name)
