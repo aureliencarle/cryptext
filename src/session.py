@@ -25,6 +25,7 @@ class SessionEnvironment:
         self.content: Dict[str, PasswordData] = {}
 
     def start_session(self, session_name: str = None) -> bool:
+        """Start a new session."""
         if not self.ensure_session(session_name=session_name):
             Io.print('Nothing to start')
             return False
@@ -33,6 +34,7 @@ class SessionEnvironment:
         return self.update(passwd)
 
     def ensure_session(self, session_name: str) -> bool:
+        """Ensure a new session is created if it does not exist"""
         if not session_name:
             return False
         if session_name in self.files:
@@ -45,13 +47,11 @@ class SessionEnvironment:
     def create_session(
         self, session_name: str, ask_confirmation: bool = True
     ) -> bool:
+        """Create a new session"""
         file = os.path.join(self.passpath, session_name)
         if not os.path.exists(file):
-            confirm = (
-                not ask_confirmation
-                or SessionEnvironment._user_confirmation(
-                    'File does not exist. Create it ?'
-                )
+            confirm = not ask_confirmation or Io.ask_user_confirmation(
+                'File does not exist. Create it ?', default_str='y'
             )
             if confirm:
                 with open(file, 'w'):
@@ -61,11 +61,6 @@ class SessionEnvironment:
             return False
         Io.print('File already exist')
         return False
-
-    @staticmethod
-    def _user_confirmation(prompt: str):
-        answer = Io.input(f'{prompt} [y/n, default=y]') or 'y'
-        return 'y' == answer.lower()
 
     def print_content(self, key: str, is_secure: bool) -> None:
         """Print a content based on its key"""

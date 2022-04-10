@@ -88,6 +88,17 @@ class Io:
         Io._print('\033[A\033[K\033[A')
 
     @staticmethod
+    def ask_user_confirmation(prompt: str, default_str: str):
+        """Ask a confirmation to the user and return the answer"""
+        default_str = default_str.lower()
+        if default_str not in 'yn':
+            raise (NameError("Default string should be 'y' or 'n'."))
+        answer = (
+            Io.input(f'{prompt} [y/n, default={default_str}] ') or default_str
+        )
+        return 'y' == answer.lower()
+
+    @staticmethod
     def _print(*args, **kwargs):
         """Print function that should be used internally in the Io class"""
         print(*args, **kwargs)
