@@ -2,9 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import base64, hashlib
-from typing import Union
 from cryptography.fernet import Fernet
-from src.utils import Io, DisplayConfig
 
 
 class Crypt:

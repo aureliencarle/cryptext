@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 
 from src.shell import Shell
-from src.utils import DisplayConfig, Io, Crypt
-from src.password import PasswordData, PasswordDataIO
+from src.utils import Io
+from src.password import PasswordDataIO
 
 
 class Touch:
