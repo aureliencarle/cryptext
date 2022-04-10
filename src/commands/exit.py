@@ -8,7 +8,8 @@ from src.utils.io import Io
 class Exit:
     @staticmethod
     def do(shell: Shell, line: str):
-        shell.session.save()
+        if shell.session.name is not None:
+            shell.session.save()
         Io.print("You're quitting cryptext")
         shell.close()
 

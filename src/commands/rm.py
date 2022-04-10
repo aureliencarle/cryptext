@@ -8,9 +8,9 @@ class Rm:
 
     @staticmethod
     def do(shell: Shell, line: str):
-        parameter, _ = shell.get_arguments(line)
+        parameter, options = shell.get_arguments(line)
         if shell.session.name is None:
-            if '-r' in _ and parameter in shell.session.files:
+            if '-r' in options and parameter in shell.session.files:
                 shell.session.destroy(parameter)
             else:
                 Rm.help(shell)
