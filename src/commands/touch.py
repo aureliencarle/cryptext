@@ -13,9 +13,10 @@ class Touch:
             Touch.help(shell)
             return
         password = PasswordDataIO.input()
-
-        password.convert(shell.session.generate_path(), shell.session.key)
-        shell.session.recover_password_data()
+        shell.session.add_password(password)
+        #readable_pass = PasswordDataIO.convert(password)
+        #password.write(shell.session.generate_path(), shell.session.key)
+        #shell.session.recover_password_data()
 
     @staticmethod
     def complete(shell: Shell, text: str, line: str, begidx: str, endidx: str):

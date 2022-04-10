@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from getpass import getpass
 import os
 
 import cryptography
@@ -67,11 +66,12 @@ class SessionEnvironment:
         PasswordDataIO.print(self.content[key], is_secure=is_secure)
 
     def destroy(self, name: str) -> None:
-        pathfile = self.passpath+'/'+self.name+'/'+name
-        if os.path.exists(pathfile):
-           os.remove(pathfile)
-        else:
-           Io.print('File does not exist')
+        pass
+        #pathfile = self.passpath+'/'+self.name
+        #if os.path.exists(pathfile):
+        #   os.remove(pathfile)
+        #else:
+        #   Io.print('File does not exist')
 
     def update(self, password: str) -> bool:
         try:
@@ -90,6 +90,12 @@ class SessionEnvironment:
     def generate_path(self) -> str:
         return os.path.join(self.passpath, self.name)
 
+    def add_password(self, password: PasswordData):
+        if password.label not in self.content.keys():
+            self.content.update({password.label: password})
+        else:
+            Io.print(' -- label already exist --')
+
     def recover_password_data(self):
         self.content.clear()
         for l in Crypt.read(self.generate_path()):
@@ -97,6 +103,13 @@ class SessionEnvironment:
             if args:
                 p = PasswordData(*args)
                 self.content.update({p.label: p})
+
+    def save(self):
+        file = os.path.join(self.passpath, self.name)
+        open(file, 'w').close()
+        for k in self.content.keys():
+            writable_pass = PasswordDataIO.convert(self.content[k])
+            PasswordDataIO.write(self.generate_path(), self.key, writable_pass)
 
     def log(self):
         if self.name is None:

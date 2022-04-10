@@ -16,7 +16,6 @@ class Rm:
                 Rm.help(shell)
         elif parameter in list(shell.session.content.keys()):
             del shell.session.content[parameter]
-            Crypt.write(shell.session.name, shell.session.key)
         else:
             Rm.help(shell)
 
