@@ -21,7 +21,14 @@ class Rm:
 
     @staticmethod
     def complete(shell: Shell, text: str, line: str, begidx: str, endidx: str):
-        pass
+        listing = shell.session.content.keys()
+        if shell.session.name is None:
+            listing = shell.session.files
+        return [
+            k
+            for k in listing
+            if not text or k.startswith(text)
+        ]
 
     @staticmethod
     def help(shell: Shell):
