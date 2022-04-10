@@ -8,9 +8,17 @@ class Rm:
 
     @staticmethod
     def do(shell: Shell, line: str):
+        parameter, _ = shell.get_arguments(line)
         if shell.session.name is None:
-            pass
-        shell.session.destroy(line)
+            if '-r' in _ and parameter in shell.session.files:
+                shell.session.destroy(parameter)
+            else:
+                Rm.help(shell)
+        elif parameter in list(shell.session.content.keys()):
+            del shell.session.content[parameter]
+            Crypt.write(shell.session.name, shell.session.key)
+        else:
+            Rm.help(shell)
 
     @staticmethod
     def complete(shell: Shell, text: str, line: str, begidx: str, endidx: str):
@@ -18,4 +26,4 @@ class Rm:
 
     @staticmethod
     def help(shell: Shell):
-        pass
+        Io.print('To remove a directory type -r as option')

@@ -67,12 +67,11 @@ class SessionEnvironment:
         PasswordDataIO.print(self.content[key], is_secure=is_secure)
 
     def destroy(self, name: str) -> None:
-        pass
-        # pathfile = self.passpath+'/'+self.name+'/'+name
-        # if os.path.exists(pathfile):
-        #    os.remove(pathfile)
-        # else:
-        #    Io.print('file does not exist')
+        pathfile = self.passpath+'/'+self.name+'/'+name
+        if os.path.exists(pathfile):
+           os.remove(pathfile)
+        else:
+           Io.print('File does not exist')
 
     def update(self, password: str) -> bool:
         try:
