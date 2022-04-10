@@ -25,18 +25,8 @@ class PasswordData:
         if self.passwd is None:
             PasswordDataIO.print_no_password_message()
             return
-        compact = ''.join(
-            [
-                self.label,
-                DisplayConfig.SEPARATOR,
-                self.url,
-                DisplayConfig.SEPARATOR,
-                self.com,
-                DisplayConfig.SEPARATOR,
-                self.user,
-                DisplayConfig.SEPARATOR,
-                self.passwd,
-            ]
+        compact = DisplayConfig.SEPARATOR.join(
+            [self.label, self.url, self.com, self.user, self.passwd]
         )
         Crypt.write(name, key, compact)
 
