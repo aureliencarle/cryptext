@@ -2,7 +2,9 @@
 # -*- coding: utf-8 -*-
 
 import cmd
+import sys
 from typing import List, Tuple
+from regex import W
 
 from requests import Session
 
@@ -16,8 +18,8 @@ class Shell(cmd.Cmd):
         self.session: SessionEnvironment = session
         self.prompt: str = self.session.prompt
 
-    def exit(self, exit_code: int = 0) -> None:
-        exit(exit_code)
+    def close(self):
+        sys.exit()
 
     def get_arguments(self, line: str) -> Tuple[str, List[str]]:
         if line:
