@@ -5,22 +5,26 @@ from getpass import getpass
 import os
 
 import cryptography
+from regex import W
 
 from src.password import PasswordData, PasswordDataIO
 from src.cryptpath import CRYPTPATH
 
-from src.utils import Geometry, Io, Crypt
+from src.utils import DisplayConfig, Io, Crypt
 
 
 class SessionEnvironment:
-    name = None
-    files = os.listdir(CRYPTPATH)
-    prompt = Geometry.ALINEA
-    passpath = CRYPTPATH
-    key = None
-    content = {}
+    def __init__(
+        self, crypt_path: str = CRYPTPATH, prompt: str = DisplayConfig.PROMPT
+    ):
+        self.name = None
+        self.prompt = DisplayConfig.PROMPT
+        self.passpath = crypt_path
+        self.files = os.listdir(crypt_path)
+        self.key = None
+        self.content = {}
 
-    def start(self, session_name=None):
+    def start(self, session_name: str = None) -> bool:
         if session_name != '':
             if session_name in self.files:
                 self.name = session_name
@@ -56,7 +60,7 @@ class SessionEnvironment:
             Io.print('file already exist')
         self.files = os.listdir(CRYPTPATH)
 
-    def destroy(self, name) -> None:
+    def destroy(self, name: str) -> None:
         pass
         # pathfile = self.passpath+'/'+self.name+'/'+name
         # if os.path.exists(pathfile):
@@ -64,33 +68,34 @@ class SessionEnvironment:
         # else:
         #    Io.print('file does not exist')
 
-    def update(self, password):
-        self.prompt = f'({self.name}) {Geometry.ALINEA}'
+    def update(self, password: str) -> None:
+        self.prompt = f'({self.name}) {DisplayConfig.PROMPT}'
         self.key = self.get_key(password)
-        self.recover()
+        self.recover_password_data()
 
-    def get_key(self, password='as'):
+    def get_key(self, password: str) -> bytes:
         return Crypt.generate_hash_key(password)
 
-    def generate_path(self):
+    def generate_path(self) -> str:
         return os.path.join(self.passpath, self.name)
 
-    def recover(self, object=PasswordData):
+    def recover_password_data(self):
         self.content.clear()
         for l in Crypt.read(self.generate_path()):
-            args = Crypt.decrypt(self.key, l).split(Geometry.MARK)
+            args = Crypt.decrypt(self.key, l).split(DisplayConfig.SEPARATOR)
             if args:
-                p = object(*args)
+                p = PasswordData(*args)
                 self.content.update({p.label: p})
 
     def log(self):
-        if self.name is not None:
-            Io.print('#=======================================')
-            Io.print('#')
-            Io.print(f'# Session loaded : {self.name}')
-            Io.print('#')
-            Io.print('#=======================================')
+        if self.name is None:
+            message = '\nNo session is loaded !\n'
         else:
-            Io.print()
-            Io.print('No session is loaded !')
-            Io.print()
+            message = (
+                '#=======================================\n'
+                '#\n'
+                f'# Session loaded : {self.name}\n'
+                '#'
+                '#=======================================\n'
+            )
+        Io.print(message)

@@ -9,7 +9,7 @@ from regex import W
 from requests import Session
 
 from src.session import SessionEnvironment
-from src.utils import Geometry
+from src.utils import DisplayConfig
 
 
 class Shell(cmd.Cmd):

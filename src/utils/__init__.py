@@ -2,5 +2,5 @@
 # -*- coding: utf-8 -*-
 
 from src.utils.io import Io
-from src.utils.io import Geometry
+from src.utils.io import DisplayConfig
 from src.utils.hashing import Crypt

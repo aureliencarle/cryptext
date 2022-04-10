@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from src.shell import Shell
-from src.utils import Geometry, Io, Crypt
+from src.utils import DisplayConfig, Io, Crypt
 from src.password import PasswordData, PasswordDataIO
 
 
@@ -16,7 +16,7 @@ class Touch:
 
         password.convert(shell.session.generate_path(), shell.session.key)
         del password
-        shell.session.recover(PasswordData)
+        shell.session.recover_password_data(PasswordData)
 
     @staticmethod
     def complete(shell: Shell, text: str, line: str, begidx: str, endidx: str):
