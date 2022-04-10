@@ -15,7 +15,7 @@ class Crypt:
         return base64.urlsafe_b64encode(hash_key.encode('utf-8'))
 
     @staticmethod
-    def crypt(key: bytes, clear_text: str) -> bytes:
+    def encrypt(key: bytes, clear_text: str) -> bytes:
         fernet = Fernet(key)
         encrypted = fernet.encrypt(clear_text.encode('utf-8'))
         return encrypted
@@ -36,4 +36,4 @@ class Crypt:
     def write(name, key, text):
         with open(name, 'ab') as encrypted_file:
             encrypted_file.write('\n'.encode('utf-8'))
-            encrypted_file.write(Crypt.crypt(key, text))
+            encrypted_file.write(Crypt.encrypt(key, text))
