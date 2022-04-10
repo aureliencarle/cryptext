@@ -5,7 +5,7 @@ from getpass import getpass
 import os
 
 import cryptography
-from regex import W
+from typing import Dict, List
 
 from src.password import PasswordData, PasswordDataIO
 from src.cryptpath import CRYPTPATH
@@ -17,48 +17,59 @@ class SessionEnvironment:
     def __init__(
         self, crypt_path: str = CRYPTPATH, prompt: str = DisplayConfig.PROMPT
     ):
-        self.name = None
-        self.prompt = DisplayConfig.PROMPT
-        self.passpath = crypt_path
-        self.files = os.listdir(crypt_path)
-        self.key = None
-        self.content = {}
+        self.name: str = None
+        self.prompt: str = DisplayConfig.PROMPT
+        self.passpath: str = crypt_path
+        self.files: List[str] = os.listdir(crypt_path)
+        self.key: bytes = None
+        self.content: Dict[str, PasswordData] = {}
 
-    def start(self, session_name: str = None) -> bool:
-        if session_name != '':
-            if session_name in self.files:
-                self.name = session_name
-            else:
-                Io.print(' -- file not found --')
-                creation = Io.input('Do you want to create it ? [yes] : ')
-                if creation == 'yes':
-                    self.create(session_name)
-                    self.start(session_name)
-                return False
-            passwd = PasswordDataIO.input_password()
-            try:
-                self.update(passwd)
-            except cryptography.fernet.InvalidToken:
-                self.name = None
-                Io.print(' -- wrong file key --')
-                return False
-            return True
-        else:
+    def start_session(self, session_name: str = None) -> bool:
+        if not self.ensure_session(session_name=session_name):
             Io.print('Nothing to start')
             return False
+        self.name = session_name
+        passwd = PasswordDataIO.input_password()
+        return self.update(passwd)
+
+    def ensure_session(self, session_name: str) -> bool:
+        if not session_name:
+            return False
+        if session_name in self.files:
+            return True
+        Io.print(' -- file not found --')
+        return self.create_session(
+            session_name=session_name, ask_confirmation=True
+        )
+
+    def create_session(
+        self, session_name: str, ask_confirmation: bool = True
+    ) -> bool:
+        file = os.path.join(self.passpath, session_name)
+        if not os.path.exists(file):
+            confirm = (
+                not ask_confirmation
+                or SessionEnvironment._user_confirmation(
+                    'File does not exist. Create it ?'
+                )
+            )
+            if confirm:
+                with open(file, 'w'):
+                    self.files.append(session_name)
+                    return True
+            Io.print('New file cannot be created')
+            return False
+        Io.print('File already exist')
+        return False
+
+    @staticmethod
+    def _user_confirmation(prompt: str):
+        answer = Io.input(f'{prompt} [y/n, default=y]') or 'y'
+        return 'y' == answer.lower()
 
     def print_content(self, key: str, is_secure: bool) -> None:
         """Print a content based on its key"""
         PasswordDataIO.print(self.content[key], is_secure=is_secure)
-
-    def create(self, name):
-        file = os.path.join(self.passpath, name)
-        if not os.path.exists(file):
-            with open(file, 'w'):
-                pass
-        else:
-            Io.print('file already exist')
-        self.files = os.listdir(CRYPTPATH)
 
     def destroy(self, name: str) -> None:
         pass
@@ -68,10 +79,16 @@ class SessionEnvironment:
         # else:
         #    Io.print('file does not exist')
 
-    def update(self, password: str) -> None:
-        self.prompt = f'({self.name}) {DisplayConfig.PROMPT}'
-        self.key = self.get_key(password)
-        self.recover_password_data()
+    def update(self, password: str) -> bool:
+        try:
+            self.prompt = f'({self.name}) {DisplayConfig.PROMPT}'
+            self.key = self.get_key(password)
+            self.recover_password_data()
+            return True
+        except cryptography.fernet.InvalidToken:
+            self.name = None
+            Io.print(' -- wrong file key --')
+            return False
 
     def get_key(self, password: str) -> bytes:
         return Crypt.generate_hash_key(password)

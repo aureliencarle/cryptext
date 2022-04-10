@@ -11,7 +11,7 @@ class Cd:
             Cd.help(shell)
             return
         parameter, _ = shell.get_arguments(line)
-        if shell.session.start(parameter):
+        if shell.session.start_session(parameter):
             shell.prompt = shell.session.prompt
         else:
             Cd.help(shell)

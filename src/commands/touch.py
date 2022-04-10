@@ -15,8 +15,7 @@ class Touch:
         password = PasswordDataIO.input()
 
         password.convert(shell.session.generate_path(), shell.session.key)
-        del password
-        shell.session.recover_password_data(PasswordData)
+        shell.session.recover_password_data()
 
     @staticmethod
     def complete(shell: Shell, text: str, line: str, begidx: str, endidx: str):

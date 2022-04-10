@@ -8,7 +8,7 @@ class Mkdir:
     @staticmethod
     def do(shell: Shell, line: str):
         parameter, _ = shell.get_arguments(line)
-        shell.session.create(parameter)
+        shell.session.create_session(parameter)
 
     @staticmethod
     def complete(shell: Shell, text: str, line: str, begidx: str, endidx: str):
