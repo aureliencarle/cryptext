@@ -2,30 +2,28 @@
 # -*- coding: utf-8 -*-
 
 import cmd
+from typing import List, Tuple
 
+from requests import Session
+
+from src.session import SessionEnvironment
 from src.utils import Geometry
 
-class Shell(cmd.Cmd):
-    prompt  = Geometry.ALINEA
-    session = None
 
+class Shell(cmd.Cmd):
     def __init__(self, session) -> None:
         super().__init__()
-        self.session    = session
-        self.prompt     = self.session.prompt
+        self.session: SessionEnvironment = session
+        self.prompt: str = self.session.prompt
 
-    def exit(self, exit_code: int=0) -> None:
+    def exit(self, exit_code: int = 0) -> None:
         exit(exit_code)
 
-    def get_arguments(self, line):
-        arguments = {}
-        all_parameters = line.split()
-        arguments.update({'parameter' : all_parameters[0]})
-        options = [
-            p for p in all_parameters[1:] if p.startswith('-')
-        ]
-        arguments.update({'options' : options})
-        return arguments
+    def get_arguments(self, line: str) -> Tuple[str, List[str]]:
+        if line:
+            parameter, *args = line.split()
+            return parameter, args
+        return '', []
 
     # Needed to not repeat the last sucess command if you spam return ;)
     def emptyline(self):
@@ -49,6 +47,5 @@ class Shell(cmd.Cmd):
             name=name,
             do_func=getattr(cls, 'do'),
             complete_func=getattr(cls, 'complete'),
-            help_func=getattr(cls, 'help')
+            help_func=getattr(cls, 'help'),
         )
-

@@ -3,12 +3,12 @@
 
 from src.shell import Shell
 
-class Mkdir:
 
+class Mkdir:
     @staticmethod
     def do(shell: Shell, line: str):
-        arguments = shell.get_arguments(line)
-        shell.session.create(arguments['parameter'])
+        parameter, _ = shell.get_arguments(line)
+        shell.session.create(parameter)
 
     @staticmethod
     def complete(shell: Shell, text: str, line: str, begidx: str, endidx: str):
