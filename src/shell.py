@@ -4,9 +4,6 @@
 import cmd
 import sys
 from typing import List, Tuple
-from regex import W
-
-from requests import Session
 
 from src.session import SessionEnvironment
 from src.utils import DisplayConfig
