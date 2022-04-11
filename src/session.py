@@ -68,7 +68,7 @@ class SessionEnvironment:
     def destroy(self, name: str) -> None:
         pathfile = self.passpath + '/' + name
         if os.path.exists(pathfile):
-            os.remove(pathfile)
+            self.files.remove(pathfile)
             self.files = os.listdir(CRYPTPATH)
         else:
             Io.print('File does not exist')
