@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 
 from src.shell import Shell
-from src.utils import DisplayConfig, Io, Crypt
-from src.password import PasswordData, PasswordDataIO
+from src.utils import Io
+from src.password import PasswordDataIO
 
 
 class Touch:
@@ -13,9 +13,7 @@ class Touch:
             Touch.help(shell)
             return
         password = PasswordDataIO.input()
-
-        password.convert(shell.session.generate_path(), shell.session.key)
-        shell.session.recover_password_data()
+        shell.session.add_password(password)
 
     @staticmethod
     def complete(shell: Shell, text: str, line: str, begidx: str, endidx: str):

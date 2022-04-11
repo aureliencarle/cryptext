@@ -6,7 +6,6 @@ import sys
 from typing import List, Tuple
 
 from src.session import SessionEnvironment
-from src.utils import DisplayConfig
 
 
 class Shell(cmd.Cmd):

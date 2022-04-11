@@ -1,13 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from ast import Pass
 from getpass import getpass
 from dataclasses import dataclass
-from selectors import EpollSelector
 from typing import List, Optional, Tuple
-
-from click import confirm
 
 from src.utils import DisplayConfig, Crypt
 from src.utils.io import Io, Format
@@ -20,16 +16,6 @@ class PasswordData:
     com: str
     user: str
     passwd: str
-
-    def convert(self, name: str, key) -> None:
-        if self.passwd is None:
-            PasswordDataIO.print_no_password_message()
-            return
-        compact = DisplayConfig.SEPARATOR.join(
-            [self.label, self.url, self.com, self.user, self.passwd]
-        )
-        Crypt.write(name, key, compact)
-
 
 class PasswordDataIO:
     @staticmethod
@@ -46,6 +32,19 @@ class PasswordDataIO:
         )
         if is_secure:
             PasswordDataIO.secure_line('--- Mischief Managed! ---')
+
+    @staticmethod
+    def convert(pass_data: PasswordData) -> List:
+        if pass_data.passwd is None:
+            PasswordDataIO.print_no_password_message()
+            return
+        compact = DisplayConfig.SEPARATOR.join(
+            [pass_data.label, pass_data.url, pass_data.com, pass_data.user, pass_data.passwd]
+        )
+        return compact
+
+    def write(name: str, key: str, compact: List) -> None:
+        Crypt.write(name, key, compact)
 
     @staticmethod
     def secure_line(final_message: str) -> None:

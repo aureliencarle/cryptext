@@ -18,13 +18,11 @@ class Cd:
 
     @staticmethod
     def complete(shell: Shell, text: str, line: str, begidx: str, endidx: str):
-        if not text:
-            completions = [k for k in shell.session.files]
-        else:
-            completions = [
-                k for k in shell.session.files if k.startswith(text)
-            ]
-        return completions
+        return [
+            k
+            for k in shell.session.files
+            if not text or k.startswith(text)
+        ]
 
     @staticmethod
     def help(shell: Shell):
