@@ -1,0 +1,8 @@
+Package: cryptext
+Version: 1.0-1
+Maintainer: Aurélien Carle <aurelien.carle.pro@gmail.com>
+Architecture: all
+Description: cryptext is a in-shell password manager.
+ cryptex is build to be user-friendly for linux user.
+Priority: optional
+Section: utils
