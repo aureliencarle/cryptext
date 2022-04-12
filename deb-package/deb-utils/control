@@ -1,5 +1,5 @@
 Package: cryptext
-Version: 1.0-1
+Version: 0.1-1
 Maintainer: Aurélien Carle <aurelien.carle.pro@gmail.com>
 Architecture: all
 Description: cryptext is a in-shell password manager.
