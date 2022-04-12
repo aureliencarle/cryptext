@@ -1,3 +1,0 @@
-#!/bin/sh
-set -e
-ln -s /usr/lib/cryptext/cryptext.py /usr/bin/cryptext
