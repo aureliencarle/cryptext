@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from src.shell import Shell
-from src.utils.io import Io, Format
+from src.utils import Io, Format
 
 
 class Ls:

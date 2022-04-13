@@ -5,8 +5,7 @@ from getpass import getpass
 from dataclasses import dataclass
 from typing import List, Optional, Tuple
 
-from src.utils import DisplayConfig, Crypt
-from src.utils.io import Io, Format
+from src.utils import DisplayConfig, Crypt, Io, Format
 
 
 @dataclass
@@ -16,6 +15,7 @@ class PasswordData:
     com: str
     user: str
     passwd: str
+
 
 class PasswordDataIO:
     @staticmethod
@@ -39,7 +39,13 @@ class PasswordDataIO:
             PasswordDataIO.print_no_password_message()
             return
         compact = DisplayConfig.SEPARATOR.join(
-            [pass_data.label, pass_data.url, pass_data.com, pass_data.user, pass_data.passwd]
+            [
+                pass_data.label,
+                pass_data.url,
+                pass_data.com,
+                pass_data.user,
+                pass_data.passwd,
+            ]
         )
         return compact
 
@@ -71,7 +77,7 @@ class PasswordDataIO:
         """Print one password attribute"""
         if attr:
             Io.print(init_text, end='')
-            Io.print(Format.colored(text=attr, color=color), indent=0)
+            Io.print(Format.styled(text=attr, color=color), indent=0)
 
     @staticmethod
     def print_no_password_message() -> None:
