@@ -3,15 +3,8 @@
 
 from src.session import SessionEnvironment
 from src.shell import Shell
-from src.commands import (
-    Ls,
-    Cat,
-    Touch,
-    Mkdir,
-    Rm,
-    Cd,
-    Exit
-)
+from src.commands import Ls, Cat, Touch, Mkdir, Rm, Cd, Exit
+
 
 def main():
     Shell.register(Ls)
