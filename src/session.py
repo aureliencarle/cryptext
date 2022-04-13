@@ -9,7 +9,7 @@ from typing import Dict, List
 from src.password import PasswordData, PasswordDataIO
 from src.cryptpath import CRYPTPATH
 
-from src.utils import DisplayConfig, Io, Crypt
+from src.utils import DisplayConfig, Io, Crypt, Format
 
 
 class SessionEnvironment:
@@ -75,7 +75,7 @@ class SessionEnvironment:
 
     def update(self, password: str) -> bool:
         try:
-            self.prompt = f'({self.name}) {DisplayConfig.PROMPT}'
+            self.prompt = f'({Format.styled(self.name, "cyan", "bright")}) {DisplayConfig.PROMPT}'
             self.key = self.get_key(password)
             self.recover_password_data()
             return True
