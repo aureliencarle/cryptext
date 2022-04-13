@@ -13,7 +13,7 @@ class DisplayConfig:
 
 class Format:
     @staticmethod
-    def colored(text: str, color: str, style: str = 'normal') -> str:
+    def styled(text: str, color: str, style: str = 'normal') -> str:
         """Apply color special characters to a string"""
         color_str = getattr(Fore, color.upper())
         style_str = getattr(Style, style.upper())
@@ -21,11 +21,11 @@ class Format:
         return f'{color_str}{style_str}{text}{reset_str}'
 
     @staticmethod
-    def colored_list(
+    def styled_list(
         lines: List[str], color: str, style: str = 'normal'
     ) -> List[str]:
         """Apply color to list of string"""
-        return [Format.colored(l, color, style) for l in lines]
+        return [Format.styled(l, color, style) for l in lines]
 
     @staticmethod
     def equalize_rows(rows: List[str], right_str: str = '') -> List[str]:

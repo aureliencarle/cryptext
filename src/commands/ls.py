@@ -11,14 +11,14 @@ class Ls:
         if shell.session.name is None:
             Io.print(
                 Format.pretty_columns(
-                    Format.colored_list(shell.session.files, 'blue', 'bright')
+                    Format.styled_list(shell.session.files, 'blue', 'bright')
                 )
             )
             return
         label_list = list(shell.session.content.keys())
         label_list.sort()
         Io.print(
-            Format.pretty_columns(Format.colored_list(label_list, 'yellow'))
+            Format.pretty_columns(Format.styled_list(label_list, 'yellow'))
         )
 
     @staticmethod
