@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from typing import List
-from colorama import Fore
+from colorama import Fore, Style
 
 
 class DisplayConfig:
@@ -13,11 +13,19 @@ class DisplayConfig:
 
 class Format:
     @staticmethod
-    def colored(text: str, color: str) -> str:
+    def colored(text: str, color: str, style: str = 'normal') -> str:
         """Apply color special characters to a string"""
-        fore_color = getattr(Fore, color.upper())
-        fore_reset = Fore.RESET
-        return f'{fore_color}{text}{fore_reset}'
+        color_str = getattr(Fore, color.upper())
+        style_str = getattr(Style, style.upper())
+        reset_str = Style.RESET_ALL
+        return f'{color_str}{style_str}{text}{reset_str}'
+
+    @staticmethod
+    def colored_list(
+        lines: List[str], color: str, style: str = 'normal'
+    ) -> List[str]:
+        """Apply color to list of string"""
+        return [Format.colored(l, color, style) for l in lines]
 
     @staticmethod
     def equalize_rows(rows: List[str], right_str: str = '') -> List[str]:
@@ -30,7 +38,7 @@ class Format:
         lines: List[str],
         term_width: int = 80,
         indent: int = DisplayConfig.INDENT,
-        pad: int = 10,
+        pad: int = 5,
     ) -> str:
         """Generate a pretty string from a list of rows, aligning columns."""
         n_lines = len(lines)
