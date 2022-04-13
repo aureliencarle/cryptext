@@ -13,7 +13,10 @@ from src.utils import DisplayConfig, Io, Crypt, Format
 
 
 class SessionEnvironment:
-    def __init__(
+    def __init__(self):
+        self.set_default()
+
+    def set_default(
         self, crypt_path: str = CRYPTPATH, prompt: str = DisplayConfig.PROMPT
     ):
         self.name: str = None
@@ -31,6 +34,11 @@ class SessionEnvironment:
         self.name = session_name
         passwd = PasswordDataIO.input_password()
         return self.update(passwd)
+
+    def close_session(self) -> bool:
+        """Close current session"""
+        self.save()
+        self.set_default()
 
     def ensure_session(self, session_name: str) -> bool:
         """Ensure a new session is created if it does not exist"""
