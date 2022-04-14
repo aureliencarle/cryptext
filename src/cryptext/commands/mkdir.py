@@ -1,17 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from src.shell import Shell
-from src.utils.io import Io
+from ..shell import Shell
 
 
-class Exit:
+class Mkdir:
     @staticmethod
     def do(shell: Shell, line: str):
-        if shell.session.name is not None:
-            shell.session.save()
-        Io.print("You're quitting cryptext")
-        shell.close()
+        parameter, _ = shell.get_arguments(line)
+        shell.session.create_session(parameter)
 
     @staticmethod
     def complete(shell: Shell, text: str, line: str, begidx: str, endidx: str):

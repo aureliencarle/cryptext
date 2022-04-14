@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from src.shell import Shell
-from src.utils import Io
+from ..shell import Shell
+from ..utils import Io
+
 
 class Rm:
-
     @staticmethod
     def do(shell: Shell, line: str):
         parameter, options = shell.get_arguments(line)
@@ -24,11 +24,7 @@ class Rm:
         listing = shell.session.content.keys()
         if shell.session.name is None:
             listing = shell.session.files
-        return [
-            k
-            for k in listing
-            if not text or k.startswith(text)
-        ]
+        return [k for k in listing if not text or k.startswith(text)]
 
     @staticmethod
     def help(shell: Shell):
