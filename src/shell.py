@@ -27,6 +27,8 @@ class Shell(cmd.Cmd):
         return False
 
     def close_session(self) -> None:
+        if self.session.name is None:
+            return
         self.session.close_session()
         self.update_prompt()
 
