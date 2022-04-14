@@ -11,7 +11,11 @@ class Cd:
             Cd.help(shell)
             return
         parameter, _ = shell.get_arguments(line)
-        if shell.session.start_session(parameter):
+        if parameter == '..':
+            shell.session.close_session()
+            shell.prompt = shell.session.prompt
+            return
+        elif shell.session.start_session(parameter):
             shell.prompt = shell.session.prompt
         else:
             Cd.help(shell)
@@ -19,9 +23,7 @@ class Cd:
     @staticmethod
     def complete(shell: Shell, text: str, line: str, begidx: str, endidx: str):
         return [
-            k
-            for k in shell.session.files
-            if not text or k.startswith(text)
+            k for k in shell.session.files if not text or k.startswith(text)
         ]
 
     @staticmethod
