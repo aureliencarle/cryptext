@@ -12,10 +12,23 @@ class Shell(cmd.Cmd):
     def __init__(self, session) -> None:
         super().__init__()
         self.session: SessionEnvironment = session
-        self.prompt: str = self.session.prompt
+        self.update_prompt()
 
     def close(self):
         sys.exit()
+
+    def update_prompt(self) -> None:
+        self.prompt = self.session.prompt
+
+    def start_session(self, session_name: str) -> bool:
+        if self.session.start_session(session_name):
+            self.update_prompt()
+            return True
+        return False
+
+    def close_session(self) -> None:
+        self.session.close_session()
+        self.update_prompt()
 
     def get_arguments(self, line: str) -> Tuple[str, List[str]]:
         if line:

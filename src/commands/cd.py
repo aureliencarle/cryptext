@@ -12,12 +12,8 @@ class Cd:
             return
         parameter, _ = shell.get_arguments(line)
         if parameter == '..':
-            shell.session.close_session()
-            shell.prompt = shell.session.prompt
-            return
-        elif shell.session.start_session(parameter):
-            shell.prompt = shell.session.prompt
-        else:
+            shell.close_session()
+        elif not shell.start_session(parameter):
             Cd.help(shell)
 
     @staticmethod
