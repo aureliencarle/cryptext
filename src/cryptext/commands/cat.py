@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from src.shell import Shell
-from src.utils import Io
+from ..shell import Shell
+from ..utils import Io
 
 
 class Cat:

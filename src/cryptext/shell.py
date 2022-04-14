@@ -5,7 +5,7 @@ import cmd
 import sys
 from typing import List, Tuple
 
-from src.session import SessionEnvironment
+from .session import SessionEnvironment
 
 
 class Shell(cmd.Cmd):

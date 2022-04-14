@@ -5,7 +5,7 @@ from getpass import getpass
 from dataclasses import dataclass
 from typing import List, Optional, Tuple
 
-from src.utils import DisplayConfig, Crypt, Io, Format
+from .utils import DisplayConfig, Crypt, Io, Format
 
 
 @dataclass
