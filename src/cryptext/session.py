@@ -6,10 +6,10 @@ import os
 import cryptography
 from typing import Dict, List
 
-from src.password import PasswordData, PasswordDataIO
-from src.cryptpath import CRYPTPATH
+from .password import PasswordData, PasswordDataIO
+from .cryptpath import CRYPTPATH
 
-from src.utils import DisplayConfig, Io, Crypt, Format
+from .utils import DisplayConfig, Io, Crypt, Format
 
 
 class SessionEnvironment:

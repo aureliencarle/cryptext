@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from src.session import SessionEnvironment
-from src.shell import Shell
-from src.commands import Ls, Cat, Touch, Mkdir, Rm, Cd, Exit
+from cryptext.session import SessionEnvironment
+from cryptext.shell import Shell
+from cryptext.commands import Ls, Cat, Touch, Mkdir, Rm, Cd, Exit
 
 
 def main():
