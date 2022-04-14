@@ -3,7 +3,7 @@
 
 from cryptext.session import SessionEnvironment
 from cryptext.shell import Shell
-from cryptext.commands import Ls, Cat, Touch, Mkdir, Rm, Cd, Exit
+from cryptext.commands import Ls, Cat, Touch, Mkdir, Rm, Cd, Import, Exit
 
 
 def main():
@@ -13,6 +13,7 @@ def main():
     Shell.register(Mkdir)
     Shell.register(Rm)
     Shell.register(Cd)
+    Shell.register(Import)
     Shell.register(Exit)
 
     session = SessionEnvironment()

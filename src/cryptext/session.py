@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import os
-
+import importlib
 import cryptography
 from typing import Dict, List
 
@@ -50,6 +50,16 @@ class SessionEnvironment:
         return self.create_session(
             session_name=session_name, ask_confirmation=True
         )
+
+    def plug_external(self, script_name: str = '') -> None:
+        """Take from external script one value for session name and list of PassordData"""
+        plugin = importlib.import_module(
+            '.plugin.' + script_name, package='cryptext'
+        )
+        self.start_session(plugin.imp_session)
+        for p in plugin.imp_pass:
+            self.add_password(p)
+        self.close_session()
 
     def create_session(
         self, session_name: str, ask_confirmation: bool = True

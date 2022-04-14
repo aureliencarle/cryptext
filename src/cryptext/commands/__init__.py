@@ -7,7 +7,8 @@ from .touch import Touch
 from .cd import Cd
 from .mkdir import Mkdir
 from .rm import Rm
+from .imp import Import
 from .exit import Exit
 
 
-__all__ = ['Ls', 'Cd', 'Touch', 'Cat', 'Mkdir', 'Rm', 'Exit']
+__all__ = ['Ls', 'Cd', 'Touch', 'Cat', 'Mkdir', 'Rm', 'Import', 'Exit']

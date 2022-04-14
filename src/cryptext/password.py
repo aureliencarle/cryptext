@@ -10,11 +10,11 @@ from .utils import DisplayConfig, Crypt, Io, Format
 
 @dataclass
 class PasswordData:
-    label: str
-    url: str
-    com: str
-    user: str
-    passwd: str
+    label: str = 'nyancat'
+    url: str = 'https://www.nyan.cat/'
+    com: str = 'sorry for this'
+    user: str = 'captain madness'
+    passwd: str = '1234'
 
 
 class PasswordDataIO:
