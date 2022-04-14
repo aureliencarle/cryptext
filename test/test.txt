@@ -1,0 +1,11 @@
+url    = https://premier.fr
+user   = premier@mail.fr
+passwd = xxxpasswordxxx1
+
+url    = https://deuxieme.com
+user   = deuxieme@mail.com
+passwd = xxxpasswordxxx2
+
+url    = https://troisieme.fr
+user   = troisieme
+passwd = piOOxxxpasswordxxx3
