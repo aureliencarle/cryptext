@@ -10,7 +10,7 @@ class Rm:
     def do(shell: Shell, line: str):
         parameter, options = shell.get_arguments(line)
         if shell.session.name is None:
-            if '-r' in options and parameter in shell.session.files:
+            if '-r' in options:
                 shell.session.destroy(parameter)
             else:
                 Rm.help(shell)

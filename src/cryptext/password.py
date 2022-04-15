@@ -85,10 +85,11 @@ class PasswordDataIO:
         Io.print('No password, no save')
 
     @staticmethod
-    def input() -> PasswordData:
+    def input(label: str) -> PasswordData:
         """Input a PasswordData object"""
-        label, url, com, user = PasswordDataIO.input_attributes(
-            ['label', 'url', 'comment', 'user']
+        Io.print(f'Creating password: {label!r}')
+        url, com, user = PasswordDataIO.input_attributes(
+            ['url', 'comment', 'user']
         )
         passwd = PasswordDataIO.input_password(confirm=True)
         return PasswordData(
