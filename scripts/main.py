@@ -3,18 +3,11 @@
 
 from cryptext.session import SessionEnvironment
 from cryptext.shell import Shell
-from cryptext.commands import Ls, Cat, Touch, Mkdir, Rm, Cd, Exit
+from cryptext.command_register import Register
 
 
 def main():
-    Shell.register(Ls)
-    Shell.register(Cat)
-    Shell.register(Touch)
-    Shell.register(Mkdir)
-    Shell.register(Rm)
-    Shell.register(Cd)
-    Shell.register(Exit)
-
+    Register.register(Shell, 'rw')
     session = SessionEnvironment()
     shell = Shell(session)
     shell.cmdloop()
