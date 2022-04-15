@@ -4,12 +4,17 @@
 import os
 import importlib
 import cryptography
-from typing import Dict, List
+from typing import Dict, List, Protocol
 
-from .password import PasswordData, PasswordDataIO
-from .cryptpath import CRYPTPATH
+from cryptext.password import PasswordData, PasswordDataIO
+from cryptext.cryptpath import CRYPTPATH
 
-from .utils import DisplayConfig, Io, Crypt, Format
+from cryptext.utils import DisplayConfig, Io, Crypt, Format
+
+
+class PluginProtocol(Protocol):
+    imp_session: str
+    imp_pass: List[PasswordData]
 
 
 class SessionEnvironment:
@@ -53,7 +58,7 @@ class SessionEnvironment:
 
     def plug_external(self, script_name: str = '') -> None:
         """Take from external script one value for session name and list of PassordData"""
-        plugin = importlib.import_module(
+        plugin: PluginProtocol = importlib.import_module(
             '.plugin.' + script_name, package='cryptext'
         )
         self.start_session(plugin.imp_session)
