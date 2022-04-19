@@ -25,11 +25,7 @@ for l in lines:
         content[-1][c[0]] = c[1]
 
 
-pass_list = []
-for c in content:
-    buffer = PasswordData(**c)
-    pass_list.append(buffer)
-    del buffer
+pass_list = [PasswordData(**kwargs) for kwargs in content]
 
 imp_session = 'test_du_plug_in'
 imp_pass = pass_list
