@@ -7,6 +7,7 @@ from cryptext.command_register import Register
 
 
 def main():
+    Register.register(Shell, 'rw')
     session = SessionEnvironment()
     shell = Shell(session)
     shell.cmdloop()
