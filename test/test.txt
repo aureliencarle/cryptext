@@ -1,0 +1,17 @@
+label  = prems
+url    = https://premier.fr
+com    = premier com
+user   = premier@mail.fr
+passwd = xxxpasswordxxx1
+
+label  = deuz
+url    = https://deuxieme.com
+com    =
+user   = deuxieme@mail.com
+passwd = xxxpasswordxxx2
+
+label  = troiz
+url    = https://troisieme.fr
+com    = 3 et 4 donc
+user   = troisieme
+passwd = xxxpasswordxxx3
