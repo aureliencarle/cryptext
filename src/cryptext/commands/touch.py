@@ -12,8 +12,15 @@ class Touch:
         if shell.session.name is None:
             Touch.help(shell)
             return
-        password = PasswordDataIO.input()
-        shell.session.add_password(password)
+        try:
+            parameter, _ = shell.get_arguments(line)
+            if not parameter:
+                Touch.help(shell)
+                return
+            password = PasswordDataIO.input(label=parameter)
+            shell.session.add_password(password)
+        except KeyboardInterrupt:
+            Io.print('KeybordInterrupt exception: Abort file creation')
 
     @staticmethod
     def complete(shell: Shell, text: str, line: str, begidx: str, endidx: str):
@@ -21,4 +28,4 @@ class Touch:
 
     @staticmethod
     def help(shell: Shell):
-        Io.print('you need a session to add a pass')
+        Io.print('Once in an active session, type \'touch <file_name>\'')
