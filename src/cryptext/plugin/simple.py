@@ -27,10 +27,7 @@ for l in lines:
 
 pass_list = []
 for c in content:
-    buffer = PasswordData()
-    for key, value in c.items():
-        setattr(buffer, key, value)
-
+    buffer = PasswordData(**c)
     pass_list.append(buffer)
     del buffer
 
