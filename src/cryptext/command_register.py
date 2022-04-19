@@ -1,4 +1,4 @@
-from .commands import Ls, Cat, Touch, Mkdir, Rm, Cd, Exit
+from .commands import Ls, Cat, Touch, Mkdir, Rm, Cd, Exit, Import
 
 
 class Register:
@@ -20,6 +20,7 @@ class Register:
         registry.register(Cat)
         registry.register(Cd)
         registry.register(Exit)
+        registry.register(Import)
 
     @staticmethod
     def _register_write(registry) -> None:
