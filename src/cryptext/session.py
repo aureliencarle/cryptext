@@ -7,14 +7,14 @@ import cryptography
 from typing import Dict, List, Protocol
 
 from cryptext.password import PasswordData, PasswordDataIO
-from cryptext.cryptpath import CRYPTPATH
+from cryptext.cryptpath import CRYPTPATH, PLUGPATH, PASSPATH
 
 from cryptext.utils import DisplayConfig, Io, Crypt, Format
 
 
 class PluginProtocol(Protocol):
-    imp_session: str
-    imp_pass: List[PasswordData]
+    import_session: str
+    import_pass: List[PasswordData]
 
 
 class SessionEnvironment:
@@ -22,12 +22,13 @@ class SessionEnvironment:
         self.set_default()
 
     def set_default(
-        self, crypt_path: str = CRYPTPATH, prompt: str = DisplayConfig.PROMPT
+        self, crypt_path: str = os.path.join(CRYPTPATH, PASSPATH), prompt: str = DisplayConfig.PROMPT
     ):
         self.name: str = None
         self.prompt: str = prompt
         self.passpath: str = crypt_path
-        self.files: List[str] = os.listdir(crypt_path)
+        self.files: List[str] = os.listdir(self.passpath)
+        self.plugins: List[str] = os.listdir(os.path.join(CRYPTPATH, PLUGPATH))
         self.key: bytes = None
         self.content: Dict[str, PasswordData] = {}
 
@@ -58,11 +59,15 @@ class SessionEnvironment:
 
     def plug_external(self, script_name: str = '') -> None:
         """Take from external script one value for session name and list of PassordData"""
-        plugin: PluginProtocol = importlib.import_module(
-            '.plugin.' + script_name, package='cryptext'
+        specification = importlib.util.spec_from_file_location(
+            script_name, os.path.join(CRYPTPATH, 'plugin', script_name + '.py')
         )
-        self.start_session(plugin.imp_session)
-        for p in plugin.imp_pass:
+        external_module = importlib.util.module_from_spec(specification)
+        specification.loader.exec_module(external_module)
+        plugin: PluginProtocol = external_module
+
+        self.start_session(plugin.import_session)
+        for p in plugin.import_pass:
             self.add_password(p)
         self.close_session()
 
@@ -93,7 +98,7 @@ class SessionEnvironment:
         if os.path.exists(pathfile):
             self.files.remove(name)
             os.remove(pathfile)
-            self.files = os.listdir(CRYPTPATH)
+            self.files = os.listdir(os.path.join(CRYPTPATH, PASSPATH))
         else:
             Io.print('File does not exist')
 
