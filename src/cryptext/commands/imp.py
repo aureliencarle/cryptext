@@ -16,11 +16,9 @@ class Import:
 
     @staticmethod
     def complete(shell: Shell, text: str, line: str, begidx: str, endidx: str):
-        listing = shell.session.plugins
-        listing.remove('__pycache__')
         return [
             k.removesuffix('.py')
-            for k in listing
+            for k in shell.session.plugins
             if not text or k.startswith(text)
         ]
 
