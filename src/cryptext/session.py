@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import os
+
 import importlib
 import cryptography
 from typing import Dict, List, Protocol
@@ -22,13 +23,19 @@ class SessionEnvironment:
         self.set_default()
 
     def set_default(
-        self, crypt_path: str = os.path.join(CRYPTPATH, PASSPATH), prompt: str = DisplayConfig.PROMPT
+        self,
+        crypt_path: str = os.path.join(CRYPTPATH, PASSPATH),
+        prompt: str = DisplayConfig.PROMPT,
     ):
         self.name: str = None
         self.prompt: str = prompt
         self.passpath: str = crypt_path
         self.files: List[str] = os.listdir(self.passpath)
-        self.plugins: List[str] = os.listdir(os.path.join(CRYPTPATH, PLUGPATH))
+        self.plugins = [
+            file
+            for file in os.listdir(os.path.join(CRYPTPATH, PLUGPATH))
+            if file != '__pycache__'
+        ]
         self.key: bytes = None
         self.content: Dict[str, PasswordData] = {}
 
