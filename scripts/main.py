@@ -14,7 +14,7 @@ def main():
 
     if args.label:
         if args.label[0] in list(session.content.keys()):
-            session.print_content(args.label[0], True)
+            session.clipboard_copy(args.label[0])
         return
 
     Register.register(Shell, 'rw')

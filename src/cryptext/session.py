@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import os
+import pyperclip
 
 import importlib
 import cryptography
@@ -97,6 +98,11 @@ class SessionEnvironment:
             return False
         Io.print('File already exist')
         return False
+
+    def clipboard_copy(self, key: str) -> None:
+        """Copy password to clipboard"""
+        PasswordDataIO.summary(self.content[key])
+        pyperclip.copy(self.content[key].passwd)
 
     def print_content(self, key: str, is_secure: bool) -> None:
         """Print a content based on its key"""
