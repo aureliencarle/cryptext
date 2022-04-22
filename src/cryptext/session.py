@@ -19,8 +19,10 @@ class PluginProtocol(Protocol):
 
 
 class SessionEnvironment:
-    def __init__(self):
+    def __init__(self, session_name=None):
         self.set_default()
+        if session_name is not None:
+            self.start_session(session_name)
 
     def set_default(
         self,
