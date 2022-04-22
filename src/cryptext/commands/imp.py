@@ -16,7 +16,11 @@ class Import:
 
     @staticmethod
     def complete(shell: Shell, text: str, line: str, begidx: str, endidx: str):
-        pass
+        return [
+            k.removesuffix('.py')
+            for k in shell.session.plugins
+            if not text or k.startswith(text)
+        ]
 
     @staticmethod
     def help(shell: Shell):
