@@ -45,7 +45,6 @@ class SessionEnvironment:
     def start_session(self, session_name: str = None) -> bool:
         """Start a new session."""
         if not self.ensure_session(session_name=session_name):
-            Io.print('Nothing to start')
             return False
         self.name = session_name
         passwd = PasswordDataIO.input_password()
@@ -157,13 +156,7 @@ class SessionEnvironment:
 
     def log(self):
         if self.name is None:
-            message = '\nNo session is loaded !\n'
+            message = 'No session is loaded !'
         else:
-            message = (
-                '#=======================================\n'
-                '#\n'
-                f'# Session loaded : {self.name}\n'
-                '#'
-                '#=======================================\n'
-            )
+            message = f'# Session loaded : {self.name}\n'
         Io.print(message)
