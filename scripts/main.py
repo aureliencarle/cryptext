@@ -4,23 +4,22 @@
 from cryptext.session import SessionEnvironment
 from cryptext.shell import Shell
 from cryptext.command_register import Register
-from cryptext.utils.arguments import arguments
+from cryptext.utils.arguments import parse_args
 
 
 def main():
 
-    args = arguments()
+    args = parse_args()
     session = SessionEnvironment(args.session)
 
-    if all(arg is None for arg in args.__dict__.values()):
-        Register.register(Shell, 'rw')
-        shell = Shell(session)
-        shell.cmdloop()
-    else:
+    if args.label:
         if args.label[0] in list(session.content.keys()):
             session.print_content(args.label[0], True)
-        else:
-            print('obviously need to be changed but it\'s a draft')
+        return
+
+    Register.register(Shell, 'rw')
+    shell = Shell(session)
+    shell.cmdloop()
 
 
 if __name__ == '__main__':

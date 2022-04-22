@@ -1,7 +1,8 @@
 import argparse
+from typing import List
 
 
-def arguments():
+def parse_args():
     parser = argparse.ArgumentParser(description='')
     parser.add_argument(
         'session',
