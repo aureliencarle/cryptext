@@ -19,6 +19,17 @@ class PasswordData:
 
 class PasswordDataIO:
     @staticmethod
+    def summary(pass_data: PasswordData) -> None:
+        """Print the data's summary"""
+        PasswordDataIO.print_attributes(
+            title=pass_data.label,
+            attrs=[
+                (pass_data.url, 'url', 'magenta'),
+                (pass_data.user, 'user', 'cyan'),
+            ],
+        )
+
+    @staticmethod
     def print(pass_data: PasswordData, is_secure: bool) -> None:
         """Print the password's data"""
         PasswordDataIO.print_attributes(

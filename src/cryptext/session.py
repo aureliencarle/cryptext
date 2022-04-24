@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import os
+import pyperclip
 
 import importlib
 import cryptography
@@ -19,8 +20,10 @@ class PluginProtocol(Protocol):
 
 
 class SessionEnvironment:
-    def __init__(self):
+    def __init__(self, session_name=None):
         self.set_default()
+        if session_name is not None:
+            self.start_session(session_name)
 
     def set_default(
         self,
@@ -42,7 +45,6 @@ class SessionEnvironment:
     def start_session(self, session_name: str = None) -> bool:
         """Start a new session."""
         if not self.ensure_session(session_name=session_name):
-            Io.print('Nothing to start')
             return False
         self.name = session_name
         passwd = PasswordDataIO.input_password()
@@ -95,6 +97,11 @@ class SessionEnvironment:
             return False
         Io.print('File already exist')
         return False
+
+    def clipboard_copy(self, key: str) -> None:
+        """Copy password to clipboard"""
+        PasswordDataIO.summary(self.content[key])
+        pyperclip.copy(self.content[key].passwd)
 
     def print_content(self, key: str, is_secure: bool) -> None:
         """Print a content based on its key"""
@@ -149,13 +156,7 @@ class SessionEnvironment:
 
     def log(self):
         if self.name is None:
-            message = '\nNo session is loaded !\n'
+            message = 'No session is loaded !'
         else:
-            message = (
-                '#=======================================\n'
-                '#\n'
-                f'# Session loaded : {self.name}\n'
-                '#'
-                '#=======================================\n'
-            )
+            message = f'# Session loaded : {self.name}\n'
         Io.print(message)

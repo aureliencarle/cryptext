@@ -2,12 +2,10 @@
 
 ## Main use
 ```console
-~$ cryptext session_name -l pass_label
-    pass_label
-    url     : https://wwww.some_url.linux
-    comment : possible comment
-    user    : linux.user
-    pass    : the_famous_password
+~$ cryptext session_name -l label_of_password
+[passphrase] >
+    label_of_password
+    user    : user_related_to_password
 ```
 
 ## Why Cryptext ?
