@@ -1,5 +1,4 @@
 __pycache__
 .vscode
 src/cryptext.egg-info
-deb-package/deb-dist/*
 deb-package/deb-build
