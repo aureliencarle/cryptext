@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import os
 import pyperclip
 
 import importlib
@@ -10,7 +9,7 @@ from typing import Dict, List, Protocol
 
 from cryptext.password import PasswordData, PasswordDataIO
 from cryptext.cryptpath import CRYPTPATH, PLUGPATH, PASSPATH
-
+from cryptext.interfaces import file_interface
 from cryptext.utils import DisplayConfig, Io, Crypt, Format
 
 
@@ -27,16 +26,18 @@ class SessionEnvironment:
 
     def set_default(
         self,
-        crypt_path: str = os.path.join(CRYPTPATH, PASSPATH),
+        crypt_path: str = file_interface.join(CRYPTPATH, PASSPATH),
         prompt: str = DisplayConfig.PROMPT,
     ):
         self.name: str = None
         self.prompt: str = prompt
         self.passpath: str = crypt_path
-        self.files: List[str] = os.listdir(self.passpath)
+        self.files: List[str] = file_interface.list_dir(self.passpath)
         self.plugins = [
             file
-            for file in os.listdir(os.path.join(CRYPTPATH, PLUGPATH))
+            for file in file_interface.list_dir(
+                file_interface.join(CRYPTPATH, PLUGPATH)
+            )
             if file != '__pycache__'
         ]
         self.key: bytes = None
@@ -69,7 +70,8 @@ class SessionEnvironment:
     def plug_external(self, script_name: str = '') -> None:
         """Take from external script one value for session name and list of PassordData"""
         specification = importlib.util.spec_from_file_location(
-            script_name, os.path.join(CRYPTPATH, 'plugin', script_name + '.py')
+            script_name,
+            file_interface.join(CRYPTPATH, f'plugin{script_name}.py'),
         )
         external_module = importlib.util.module_from_spec(specification)
         specification.loader.exec_module(external_module)
@@ -109,10 +111,12 @@ class SessionEnvironment:
 
     def destroy(self, name: str) -> None:
         pathfile = self.passpath + '/' + name
-        if os.path.exists(pathfile):
+        if file_interface.exists(pathfile):
             self.files.remove(name)
-            os.remove(pathfile)
-            self.files = os.listdir(os.path.join(CRYPTPATH, PASSPATH))
+            file_interface.remove_file(pathfile)
+            self.files = file_interface.list_dir(
+                file_interface.join(CRYPTPATH, PASSPATH)
+            )
         else:
             Io.print('File does not exist')
 
@@ -131,7 +135,7 @@ class SessionEnvironment:
         return Crypt.generate_hash_key(password)
 
     def generate_path(self) -> str:
-        return os.path.join(self.passpath, self.name)
+        return file_interface.join(self.passpath, self.name)
 
     def add_password(self, password: PasswordData):
         if password.label not in self.content.keys():
@@ -148,7 +152,7 @@ class SessionEnvironment:
                 self.content[p.label] = p
 
     def save(self):
-        file = os.path.join(self.passpath, self.name)
+        file = file_interface.join(self.passpath, self.name)
         open(file, 'w').close()
         for k in self.content.keys():
             writable_pass = PasswordDataIO.convert(self.content[k])
