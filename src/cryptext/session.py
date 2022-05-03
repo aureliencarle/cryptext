@@ -97,10 +97,9 @@ class SessionEnvironment:
         PasswordDataIO.print(self.content[key], is_secure=is_secure)
 
     def destroy(self, name: str) -> None:
-        pathfile = file_interface.get_password_path(name)
-        if file_interface.exists(pathfile):
+        if file_interface.password_exists(name):
             self.files.remove(name)
-            file_interface.remove_file(pathfile)
+            file_interface.remove_password(name)
             self.files = file_interface.list_passwords()
         else:
             Io.print('File does not exist')
