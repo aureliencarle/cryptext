@@ -1,3 +1,10 @@
+"""Interfaces for cryptext."""
+
+from .password_interface import (
+    PasswordData,
+    encrypt_password,
+    decrypt_password,
+)
 from .file_interface import PathFilterFunction, InvalidFileError
 from .file_interface import (
     is_dir,
@@ -25,4 +32,7 @@ __all__ = [
     'remove_file',
     'read_binary_file',
     'write_to_binary_file',
+    'PasswordData',
+    'encrypt_password',
+    'decrypt_password',
 ]
