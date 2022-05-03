@@ -17,6 +17,10 @@ from .file_interface import (
     remove_file,
     read_binary_file,
     write_to_binary_file,
+    get_password_path,
+    get_plugin_path,
+    list_plugins,
+    list_passwords,
 )
 
 __all__ = [
@@ -32,6 +36,10 @@ __all__ = [
     'remove_file',
     'read_binary_file',
     'write_to_binary_file',
+    'list_plugins',
+    'list_passwords',
+    'get_password_path',
+    'get_plugin_path',
     'PasswordData',
     'encrypt_password',
     'decrypt_password',

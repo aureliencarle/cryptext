@@ -1,15 +1,4 @@
-import os
-
-from cryptext.password import PasswordData, PasswordDataIO
-
-# @dataclass
-# class PasswordData:
-#    label: str
-#    url: str
-#    com: str
-#    user: str
-#    passwd: str
-
+from cryptext.password import PasswordData
 
 with open('test/test.txt', 'r') as file:
     lines = file.read().splitlines()
