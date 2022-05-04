@@ -11,6 +11,10 @@ class LayoutConfig:
     prompt: str = 'cryptext > '
     indent_size: int = 4
 
+    def get_indent(self) -> str:
+        """Return the indent for the layout config."""
+        return ' ' * self.indent_size
+
 
 class CryptextLayouts(Enum):
     """Built-in cryptext layouts."""

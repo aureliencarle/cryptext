@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 from ..shell import Shell
-from ..password import PasswordDataIO
 
 
 class Touch:
@@ -16,7 +15,7 @@ class Touch:
             if not parameter:
                 Touch.help(shell)
                 return
-            password = PasswordDataIO.input(label=parameter)
+            password = shell.session.input_password_data(label=parameter)
             shell.session.add_password(password)
         except KeyboardInterrupt:
             shell.session.user_interface.error(

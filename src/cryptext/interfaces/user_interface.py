@@ -1,8 +1,10 @@
 """User interface of cryptext."""
 
 from __future__ import annotations
+import copy
 
 from dataclasses import dataclass
+from getpass import getpass
 from typing import Optional, Union
 
 from ..io.terminal_io import TerminalInterface, Format
@@ -23,10 +25,14 @@ class UserInterface:
 
     def print(self, text: str, **kwargs) -> None:
         """Print text in the terminal using the base style."""
-        UserInterface.print_with_style(text=text, item=self.theme['base'], **kwargs)
+        UserInterface.print_with_style(
+            text=text, item=self.theme['base'], **kwargs
+        )
 
     @staticmethod
-    def print_with_style(text: Union[str, list[str]], item: ThemeItem, **kwargs) -> None:
+    def print_with_style(
+        text: Union[str, list[str]], item: ThemeItem, **kwargs
+    ) -> None:
         """Print a string or list of strings applying a given style"""
         formatted_text = UserInterface.apply_theme_item(text, item)
         TerminalInterface.print(formatted_text, **kwargs)
@@ -88,6 +94,60 @@ class UserInterface:
         )
         answer = TerminalInterface.input(prompt) or default_str
         return 'y' == answer.lower()
+
+    def input_attributes(self, prompts: list[str]) -> list[str]:
+        """Input a list of attributes."""
+        equalized_prompts = Format.equalize_rows(prompts, ' : ')
+        formatted_prompts = [
+            UserInterface.apply_theme_item(prompt, item=self.theme['base'])
+            + self.get_user_mode()
+            for prompt in equalized_prompts
+        ]
+        return [
+            TerminalInterface.input(prompt) for prompt in formatted_prompts
+        ]
+
+    def print_attributes(self, title: str, attrs: list[tuple]) -> None:
+        """Print a list of attributes in column."""
+        attrs, names, colors = list(zip(*attrs))
+        equalized_names = Format.equalize_rows(names, ' : ')
+        TerminalInterface.print(title)
+        for attr, name, color in zip(attrs, equalized_names, colors):
+            if not attr:
+                continue
+            self.print(name, end='')
+            item = copy.copy(self.theme['base'])
+            item.color = color
+            self.print_with_style(attr, item=item)
+
+    def secure_line(self, final_message: str) -> None:
+        """Delete the password line after an input"""
+        TerminalInterface.input(silent=True)
+        TerminalInterface.delete_line()
+        self.print(final_message)
+
+    def input_password(self, confirm: bool = True, n_trials: int = 3) -> str:
+        """Input a password from the user."""
+        if n_trials <= 0:
+            self.error('No more trials for password input')
+            return None
+        pass_ = self._ask_password(
+            self.layout_config.get_indent() + 'password > '
+        )
+        if confirm:
+            conf = self._ask_password(
+                self.layout_config.get_indent() + 'confirm  > '
+            )
+            if pass_ != conf:
+                self.info(
+                    f'!!! password do not match !!! left {n_trials-1} try'
+                )
+                return self.input_password(confirm, n_trials - 1)
+        return pass_
+
+    def _ask_password(self, input_text: str) -> str:
+        """Internal function to input a password"""
+        return getpass(input_text)
 
     def get_user_mode(self) -> str:
         """Reset the format and set it to the user input format."""

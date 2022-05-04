@@ -27,7 +27,6 @@ from cryptext.interfaces.file_interface import (
     read_password_data,
     append_password_data,
 )
-from cryptext.password import PasswordDataIO
 
 
 class PluginProtocol(Protocol):
@@ -55,7 +54,7 @@ class SessionEnvironment:
         if not self.ensure_session(session_name=session_name):
             return False
         self.name = session_name
-        passwd = PasswordDataIO.input_password()
+        passwd = self.user_interface.input_password(confirm=False)
         return self.update(passwd)
 
     def close_session(self) -> bool:
@@ -111,12 +110,46 @@ class SessionEnvironment:
 
     def clipboard_copy(self, key: str) -> None:
         """Copy password to clipboard"""
-        PasswordDataIO.summary(self.content[key])
+        self.print_password_data(key, summary=True)
         pyperclip.copy(self.content[key].passwd)
 
     def print_content(self, key: str, is_secure: bool) -> None:
         """Print a content based on its key"""
-        PasswordDataIO.print(self.content[key], is_secure=is_secure)
+        self.print_password_data(key, is_secure=is_secure)
+
+    def input_password_data(self, label: str) -> PasswordData:
+        """Input a password data from the user."""
+        self.user_interface.print(f'Creating password: {label!r}')
+        url, com, user = self.user_interface.input_attributes(
+            ['url', 'com', 'user']
+        )
+        passwd = self.user_interface.input_password(confirm=True)
+        return PasswordData(
+            label=label, url=url, com=com, user=user, passwd=passwd
+        )
+
+    def print_password_data(
+        self, label: str, summary: bool = False, is_secure: bool = True
+    ) -> None:
+        """Print password data in the terminal."""
+        pass_data = self.content[label]
+        if summary:
+            attrs = [
+                (pass_data.url, 'url', 'magenta'),
+                (pass_data.com, 'comment', 'yellow'),
+            ]
+        else:
+            attrs = [
+                (pass_data.url, 'url', 'magenta'),
+                (pass_data.com, 'comment', 'yellow'),
+                (pass_data.user, 'user', 'cyan'),
+                (pass_data.passwd, 'pass', 'red'),
+            ]
+        self.user_interface.print_attributes(
+            title=f'Password data {label!r}:', attrs=attrs
+        )
+        if not summary and is_secure:
+            self.user_interface.secure_line('--- Mischief Managed! ---')
 
     def destroy(self, name: str) -> None:
         if password_exists(name):
