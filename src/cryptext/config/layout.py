@@ -10,7 +10,7 @@ class LayoutConfig:
 
     prompt: str
     indent_size: int
-    _indent: str = field(init=False, repr=False, default=0)
+    _indent: str = field(init=False, repr=False, default='')
 
     def __post_init__(self) -> None:
         """Initialize the string indent from the indent size."""
