@@ -79,7 +79,11 @@ class SessionEnvironment:
             script_name, get_plugin_path(script_name),
         )
         external_module = importlib.util.module_from_spec(specification)
-        specification.loader.exec_module(external_module)
+        try:
+            specification.loader.exec_module(external_module)
+        except FileNotFoundError:
+            self.user_interface.error(f'Plugin {script_name!r} not found.')
+            return
         plugin: PluginProtocol = external_module
 
         self.start_session(plugin.import_session)

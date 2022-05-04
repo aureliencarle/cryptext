@@ -25,41 +25,38 @@ class UserInterface:
 
     def print(self, text: str, **kwargs) -> None:
         """Print text in the terminal using the base style."""
-        UserInterface.print_with_style(
-            text=text, item=self.theme['base'], **kwargs
-        )
+        self.print_with_style(text=text, item=self.theme['base'], **kwargs)
 
-    @staticmethod
     def print_with_style(
-        text: Union[str, list[str]], item: ThemeItem, **kwargs
+        self, text: Union[str, list[str]], item: ThemeItem, **kwargs
     ) -> None:
         """Print a string or list of strings applying a given style"""
-        formatted_text = UserInterface.apply_theme_item(text, item)
-        TerminalInterface.print(formatted_text, **kwargs)
+        formatted_text = self.apply_theme_item(text, item)
+        TerminalInterface.print(
+            formatted_text, self.layout_config.indent, **kwargs
+        )
 
     def info(self, text: str) -> None:
         """Print an info in the terminal."""
-        UserInterface.print_with_style(text=text, item=self.theme['info'])
+        self.print_with_style(text=text, item=self.theme['info'])
 
     def warning(self, text: str) -> None:
         """Print a warning in the terminal."""
-        UserInterface.print_with_style(
+        self.print_with_style(
             text=f'Warning: {text}', item=self.theme['warning']
         )
 
     def error(self, text: str) -> None:
         """Print an error in the terminal."""
-        UserInterface.print_with_style(
-            text=f'Error: {text}', item=self.theme['error']
-        )
+        self.print_with_style(text=f'Error: {text}', item=self.theme['error'])
 
     def list_files(self, files: list[str]) -> None:
         """Print the list of files using the relevant theme."""
-        UserInterface.print_with_style(files, self.theme['files'])
+        self.print_with_style(files, self.theme['files'])
 
     def list_directories(self, directories: list[str]) -> None:
         """Print the list of directories using the relevant theme."""
-        UserInterface.print_with_style(directories, self.theme['directories'])
+        self.print_with_style(directories, self.theme['directories'])
 
     def get_prompt(self, session: Optional[str] = None) -> str:
         """Return the prompt after applying the theme"""
@@ -67,18 +64,14 @@ class UserInterface:
         if session:
             session_prompt = ''.join(
                 [
-                    UserInterface.apply_theme_item(
-                        '(', item=self.theme['base']
-                    ),
-                    UserInterface.apply_theme_item(
+                    self.apply_theme_item('(', item=self.theme['base']),
+                    self.apply_theme_item(
                         session, item=self.theme['session_name']
                     ),
-                    UserInterface.apply_theme_item(
-                        ') ', item=self.theme['base']
-                    ),
+                    self.apply_theme_item(') ', item=self.theme['base']),
                 ]
             )
-        default_prompt = UserInterface.apply_theme_item(
+        default_prompt = self.apply_theme_item(
             self.layout_config.prompt, item=self.theme['prompt'],
         )
         user_style = self.get_user_mode()
@@ -89,29 +82,33 @@ class UserInterface:
         default_str = default_str.lower()
         if default_str not in 'yn':
             raise NameError("Default string should be 'y' or 'n'.")
-        prompt = UserInterface.apply_theme_item(
+        prompt = self.apply_theme_item(
             f'{prompt} [y/n, default={default_str}] ', item=self.theme['base']
         )
-        answer = TerminalInterface.input(prompt) or default_str
+        answer = (
+            TerminalInterface.input(prompt, self.layout_config.indent)
+            or default_str
+        )
         return 'y' == answer.lower()
 
     def input_attributes(self, prompts: list[str]) -> list[str]:
         """Input a list of attributes."""
         equalized_prompts = Format.equalize_rows(prompts, ' : ')
         formatted_prompts = [
-            UserInterface.apply_theme_item(prompt, item=self.theme['base'])
+            self.apply_theme_item(prompt, item=self.theme['base'])
             + self.get_user_mode()
             for prompt in equalized_prompts
         ]
         return [
-            TerminalInterface.input(prompt) for prompt in formatted_prompts
+            TerminalInterface.input(prompt, self.layout_config.indent)
+            for prompt in formatted_prompts
         ]
 
     def print_attributes(self, title: str, attrs: list[tuple]) -> None:
         """Print a list of attributes in column."""
         attrs, names, colors = list(zip(*attrs))
         equalized_names = Format.equalize_rows(names, ' : ')
-        TerminalInterface.print(title)
+        TerminalInterface.print(title, indent=self.layout_config.indent)
         for attr, name, color in zip(attrs, equalized_names, colors):
             if not attr:
                 continue
@@ -123,7 +120,6 @@ class UserInterface:
     def secure_line(self, final_message: str) -> None:
         """Delete the password line after an input"""
         TerminalInterface.input(silent=True)
-        TerminalInterface.delete_line()
         self.print(final_message)
 
     def input_password(self, confirm: bool = True, n_trials: int = 3) -> str:
@@ -131,12 +127,10 @@ class UserInterface:
         if n_trials <= 0:
             self.error('No more trials for password input')
             return None
-        pass_ = self._ask_password(
-            self.layout_config.get_indent() + 'password > '
-        )
+        pass_ = self._ask_password(self.layout_config.indent + 'password > ')
         if confirm:
             conf = self._ask_password(
-                self.layout_config.get_indent() + 'confirm  > '
+                self.layout_config.indent + 'confirm  > '
             )
             if pass_ != conf:
                 self.info(
@@ -154,8 +148,9 @@ class UserInterface:
         item = self.theme['user_input']
         return Format.get_style(color=item.color, style=item.style)
 
-    @staticmethod
-    def apply_theme_item(text: Union[str, list[str]], item: ThemeItem) -> str:
+    def apply_theme_item(
+        self, text: Union[str, list[str]], item: ThemeItem
+    ) -> str:
         """
         Apply a theme-defined format to a string or a string list (columns)
         """
@@ -163,5 +158,6 @@ class UserInterface:
             return Format.styled(text=text, color=item.color, style=item.style)
         else:
             return Format.pretty_columns(
-                Format.styled_list(text, color=item.color, style=item.style)
+                Format.styled_list(text, color=item.color, style=item.style),
+                indent=self.layout_config.indent,
             )

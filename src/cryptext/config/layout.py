@@ -1,22 +1,28 @@
 """Layout configurations for cryptext."""
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from enum import Enum
 
 
-@dataclass
+@dataclass(frozen=True)
 class LayoutConfig:
     """Define a layout configuration for cryptext."""
 
-    prompt: str = 'cryptext > '
-    indent_size: int = 4
+    prompt: str
+    indent_size: int
+    _indent: str = field(init=False, repr=False, default=0)
 
-    def get_indent(self) -> str:
+    def __post_init__(self) -> None:
+        """Initialize the string indent from the indent size."""
+        object.__setattr__(self, '_indent', self.indent_size * ' ')
+
+    @property
+    def indent(self) -> str:
         """Return the indent for the layout config."""
-        return ' ' * self.indent_size
+        return self._indent
 
 
 class CryptextLayouts(Enum):
     """Built-in cryptext layouts."""
 
-    DEFAULT: LayoutConfig = LayoutConfig()
+    DEFAULT: LayoutConfig = LayoutConfig('cryptext > ', indent_size=4)

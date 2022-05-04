@@ -5,12 +5,6 @@ from typing import List, Optional
 from colorama import Fore, Style
 
 
-class DisplayConfig:
-    separator: str = '#netrisca#?!?#acsirten#'
-    prompt: str = 'cryptext > '
-    indent_size: int = 4
-
-
 class InvalidColor(Exception):
     """Raised when an invalid color string is given to Format."""
 
@@ -20,6 +14,8 @@ class InvalidStyle(Exception):
 
 
 class Format:
+    """Apply color and style to strings."""
+
     @staticmethod
     def get_style(
         color: Optional[str] = None, style: Optional[str] = None
@@ -61,10 +57,7 @@ class Format:
 
     @staticmethod
     def pretty_columns(
-        lines: List[str],
-        term_width: int = 80,
-        indent: int = DisplayConfig.indent_size,
-        pad: int = 5,
+        lines: List[str], indent: str = '', term_width: int = 80, pad: int = 5,
     ) -> str:
         """Generate a pretty string from a list of rows, aligning columns."""
         n_lines = len(lines)
@@ -72,7 +65,7 @@ class Format:
             return ''
 
         col_width = max(len(line) for line in lines)
-        n_cols = int((term_width + pad - indent) / (col_width + pad))
+        n_cols = int((term_width + pad - len(indent)) / (col_width + pad))
         n_cols = min(n_lines, max(1, n_cols))
 
         col_len = int(n_lines / n_cols) + (0 if n_lines % n_cols == 0 else 1)
@@ -89,7 +82,7 @@ class Format:
 
         return '\n'.join(
             [
-                ' ' * indent
+                indent
                 + (' ' * pad).join(line.ljust(col_width) for line in row)
                 for row in rows
             ]
@@ -98,20 +91,14 @@ class Format:
 
 class TerminalInterface:
     @staticmethod
-    def print(
-        text: str = '', indent: str = DisplayConfig.indent_size, **kwargs
-    ) -> None:
+    def print(text: str = '', indent: str = '', **kwargs) -> None:
         """Print a text in the standard output"""
-        TerminalInterface._print(' ' * indent + text, **kwargs)
+        TerminalInterface._print(indent + text, **kwargs)
 
     @staticmethod
-    def input(
-        text: str = '',
-        indent: str = DisplayConfig.indent_size,
-        silent: bool = False,
-    ) -> None:
+    def input(text: str = '', indent: str = '', silent: bool = False,) -> None:
         """Ask an input to the user"""
-        res = TerminalInterface._input(' ' * indent + text)
+        res = TerminalInterface._input(indent + text)
         if silent:
             TerminalInterface.delete_line()
         return res
