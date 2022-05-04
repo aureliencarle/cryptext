@@ -34,8 +34,8 @@ class Theme:
     prompt: ThemeItem  # Applies to the prompt (e.g. cryptext > )
     user_input: ThemeItem  # Applies to user inputs
     session_name: ThemeItem  # Applies to the current session name
-    dir_name: ThemeItem  # Applies to directory names (ls)
-    file_name: ThemeItem  # Applies to file names (ls)
+    directories: ThemeItem  # Applies to directory names (ls)
+    files: ThemeItem  # Applies to file names (ls)
 
     def __getitem__(self, item: str) -> ThemeItem:
         """Return a theme item applying the base item first."""
@@ -53,6 +53,6 @@ class CryptextThemes(Enum):
         prompt=ThemeItem(),
         user_input=ThemeItem(),
         session_name=ThemeItem(color='cyan', style='bright'),
-        dir_name=ThemeItem(color='blue', style='bright'),
-        file_name=ThemeItem(color='yellow'),
+        directories=ThemeItem(color='blue', style='bright'),
+        files=ThemeItem(color='yellow'),
     )

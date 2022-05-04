@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Optional
+from typing import Optional, Union
 
 from ..io.terminal_io import TerminalInterface, Format
 from ..config.layout import CryptextLayouts, LayoutConfig
@@ -23,23 +23,37 @@ class UserInterface:
 
     def print(self, text: str) -> None:
         """Print text in the terminal using the base style."""
-        UserInterface.print_with_format(text=text, item=self.theme['base'])
+        UserInterface.print_with_style(text=text, item=self.theme['base'])
+
+    @staticmethod
+    def print_with_style(text: Union[str, list[str]], item: ThemeItem) -> None:
+        """Print a string or list of strings applying a given style"""
+        formatted_text = UserInterface.apply_theme_item(text, item)
+        TerminalInterface.print(formatted_text)
 
     def info(self, text: str) -> None:
         """Print an info in the terminal."""
-        UserInterface.print_with_format(text=text, item=self.theme['info'])
+        UserInterface.print_with_style(text=text, item=self.theme['info'])
 
     def warning(self, text: str) -> None:
         """Print a warning in the terminal."""
-        UserInterface.print_with_format(
+        UserInterface.print_with_style(
             text=f'Warning: {text}', item=self.theme['warning']
         )
 
     def error(self, text: str) -> None:
         """Print an error in the terminal."""
-        UserInterface.print_with_format(
+        UserInterface.print_with_style(
             text=f'Error: {text}', item=self.theme['error']
         )
+
+    def list_files(self, files: list[str]) -> None:
+        """Print the list of files using the relevant theme."""
+        UserInterface.print_with_style(files, self.theme['files'])
+
+    def list_directories(self, directories: list[str]) -> None:
+        """Print the list of directories using the relevant theme."""
+        UserInterface.print_with_style(directories, self.theme['directories'])
 
     def get_prompt(self, session: Optional[str] = None) -> str:
         """Return the prompt after applying the theme"""
@@ -81,11 +95,13 @@ class UserInterface:
         return Format.get_style(color=item.color, style=item.style)
 
     @staticmethod
-    def apply_theme_item(text: str, item: ThemeItem) -> str:
-        """Apply a theme-defined format to a string."""
-        return Format.styled(text=text, color=item.color, style=item.style)
-
-    @staticmethod
-    def print_with_format(text: str, item: ThemeItem) -> None:
-        formatted_text = UserInterface.apply_theme_item(text, item)
-        TerminalInterface.print(formatted_text)
+    def apply_theme_item(text: Union[str, list[str]], item: ThemeItem) -> str:
+        """
+        Apply a theme-defined format to a string or a string list (columns)
+        """
+        if isinstance(text, str):
+            return Format.styled(text=text, color=item.color, style=item.style)
+        else:
+            return Format.pretty_columns(
+                Format.styled_list(text, color=item.color, style=item.style)
+            )
