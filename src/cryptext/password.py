@@ -6,15 +6,7 @@ from dataclasses import dataclass
 from typing import List, Optional, Tuple
 
 from .utils import DisplayConfig, Io, Format
-
-
-@dataclass
-class PasswordData:
-    label: str = 'nyancat'
-    url: str = 'https://www.nyan.cat/'
-    com: str = 'sorry for this'
-    user: str = 'captain madness'
-    passwd: str = '1234'
+from .interfaces.password_interface import PasswordData
 
 
 class PasswordDataIO:

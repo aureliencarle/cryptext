@@ -7,8 +7,12 @@ from typing import Dict, List, Optional, Protocol
 import cryptography
 import pyperclip
 
-from cryptext.password import PasswordData, PasswordDataIO
-from cryptext.interfaces import file_interface, password_interface
+from cryptext.password import PasswordDataIO
+from cryptext.interfaces import (
+    file_interface,
+    password_interface,
+    PasswordData,
+)
 from cryptext.utils import DisplayConfig, Io, Format
 from cryptext.io import file_io
 
