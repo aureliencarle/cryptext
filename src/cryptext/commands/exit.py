@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from ..shell import Shell
-from ..utils.io import Io
+from ..io.terminal_io import TerminalInterface
 
 
 class Exit:
@@ -10,7 +10,7 @@ class Exit:
     def do(shell: Shell, line: str):
         if shell.session.name is not None:
             shell.session.save()
-        Io.print("You're quitting cryptext")
+        TerminalInterface.print("You're quitting cryptext")
         shell.close()
 
     @staticmethod

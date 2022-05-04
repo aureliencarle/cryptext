@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from ..shell import Shell
-from ..utils import Io
+from ..io.terminal_io import TerminalInterface
 
 
 class Import:
@@ -24,4 +24,4 @@ class Import:
 
     @staticmethod
     def help(shell: Shell):
-        Io.print('Need plug-in name')
+        TerminalInterface.print('Need plug-in name')

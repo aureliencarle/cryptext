@@ -2,14 +2,14 @@
 # -*- coding: utf-8 -*-
 
 from ..shell import Shell
-from ..utils import Io, Format
+from ..io.terminal_io import TerminalInterface, Format
 
 
 class Ls:
     @staticmethod
     def do(shell: Shell, line: str):
         if shell.session.name is None:
-            Io.print(
+            TerminalInterface.print(
                 Format.pretty_columns(
                     Format.styled_list(shell.session.files, 'blue', 'bright')
                 )
@@ -17,7 +17,7 @@ class Ls:
             return
         label_list = list(shell.session.content.keys())
         label_list.sort()
-        Io.print(
+        TerminalInterface.print(
             Format.pretty_columns(Format.styled_list(label_list, 'yellow'))
         )
 

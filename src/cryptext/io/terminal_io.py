@@ -70,13 +70,13 @@ class Format:
         )
 
 
-class Io:
+class TerminalInterface:
     @staticmethod
     def print(
         text: str = '', indent: str = DisplayConfig.INDENT, **kwargs
     ) -> None:
         """Print a text in the standard output"""
-        Io._print(' ' * indent + text, **kwargs)
+        TerminalInterface._print(' ' * indent + text, **kwargs)
 
     @staticmethod
     def input(
@@ -85,15 +85,15 @@ class Io:
         silent: bool = False,
     ) -> None:
         """Ask an input to the user"""
-        res = Io._input(' ' * indent + text)
+        res = TerminalInterface._input(' ' * indent + text)
         if silent:
-            Io.delete_line()
+            TerminalInterface.delete_line()
         return res
 
     @staticmethod
     def delete_line() -> None:
         """Delete the last line printed"""
-        Io._print('\033[A\033[K\033[A')
+        TerminalInterface._print('\033[A\033[K\033[A')
 
     @staticmethod
     def ask_user_confirmation(prompt: str, default_str: str):
@@ -102,7 +102,7 @@ class Io:
         if default_str not in 'yn':
             raise (NameError("Default string should be 'y' or 'n'."))
         answer = (
-            Io.input(f'{prompt} [y/n, default={default_str}] ') or default_str
+            TerminalInterface.input(f'{prompt} [y/n, default={default_str}] ') or default_str
         )
         return 'y' == answer.lower()
 

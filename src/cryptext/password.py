@@ -2,19 +2,10 @@
 # -*- coding: utf-8 -*-
 
 from getpass import getpass
-from dataclasses import dataclass
 from typing import List, Optional, Tuple
 
-from .utils import DisplayConfig, Io, Format
-
-
-@dataclass
-class PasswordData:
-    label: str = 'nyancat'
-    url: str = 'https://www.nyan.cat/'
-    com: str = 'sorry for this'
-    user: str = 'captain madness'
-    passwd: str = '1234'
+from .io.terminal_io import DisplayConfig, TerminalInterface, Format
+from .interfaces.password_interface import PasswordData
 
 
 class PasswordDataIO:
@@ -63,9 +54,9 @@ class PasswordDataIO:
     @staticmethod
     def secure_line(final_message: str) -> None:
         """Delete the password line after an input"""
-        Io.input(silent=True)
-        Io.delete_line()
-        Io.print(final_message)
+        TerminalInterface.input(silent=True)
+        TerminalInterface.delete_line()
+        TerminalInterface.print(final_message)
 
     @staticmethod
     def print_attributes(
@@ -74,7 +65,7 @@ class PasswordDataIO:
         """Print a list of password attributes"""
         attrs, names, colors = list(zip(*attrs))
         equalized_names = Format.equalize_rows(names, ' : ')
-        Io.print(title)
+        TerminalInterface.print(title)
         for attr, name, color in zip(attrs, equalized_names, colors):
             PasswordDataIO.print_attribute(
                 init_text=name, attr=attr, color=color
@@ -84,18 +75,20 @@ class PasswordDataIO:
     def print_attribute(init_text: str, attr: str, color: str) -> None:
         """Print one password attribute"""
         if attr:
-            Io.print(init_text, end='')
-            Io.print(Format.styled(text=attr, color=color), indent=0)
+            TerminalInterface.print(init_text, end='')
+            TerminalInterface.print(
+                Format.styled(text=attr, color=color), indent=0
+            )
 
     @staticmethod
     def print_no_password_message() -> None:
         """Print a message when no password can be created"""
-        Io.print('No password, no save')
+        TerminalInterface.print('No password, no save')
 
     @staticmethod
     def input(label: str) -> PasswordData:
         """Input a PasswordData object"""
-        Io.print(f'Creating password: {label!r}')
+        TerminalInterface.print(f'Creating password: {label!r}')
         url, com, user = PasswordDataIO.input_attributes(
             ['url', 'comment', 'user']
         )
@@ -108,7 +101,9 @@ class PasswordDataIO:
     def input_attributes(prompts: List[str]) -> List[str]:
         """Input the attributes of PasswordData except the password"""
         equalized_prompts = Format.equalize_rows(prompts, ' : ')
-        return [Io.input(prompt) for prompt in equalized_prompts]
+        return [
+            TerminalInterface.input(prompt) for prompt in equalized_prompts
+        ]
 
     @staticmethod
     def input_password(
@@ -146,14 +141,16 @@ class PasswordDataIO:
     def _confirmation_ask(input_text, confirm_text, n_trials) -> Optional[str]:
         """Internal function to input a password with confirmation"""
         if n_trials <= 0:
-            Io.print('code not added !')
+            TerminalInterface.print('code not added !')
             return None
         pas = getpass(' ' * DisplayConfig.INDENT + input_text)
         cof = getpass(' ' * DisplayConfig.INDENT + confirm_text)
         if pas == cof:
             return pas
         else:
-            Io.print(f'!!! password do not match !!! left {n_trials-1} try')
+            TerminalInterface.print(
+                f'!!! password do not match !!! left {n_trials-1} try'
+            )
             return PasswordDataIO._confirmation_ask(
                 input_text=input_text,
                 confirm_text=confirm_text,

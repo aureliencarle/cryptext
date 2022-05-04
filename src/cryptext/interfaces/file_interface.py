@@ -1,13 +1,15 @@
 """File interface. Handles read/write, creation and deletion of files."""
 
 from pathlib import Path
-from .file_io import (
+from ..io.file_io import (
     create_file,
     join,
     list_dir,
     ensure_directory,
     exists,
+    read_binary_file,
     remove_file,
+    write_to_binary_file,
 )
 
 
@@ -88,3 +90,17 @@ def list_passwords() -> list[str]:
     """List the password files in the password directory."""
     _CryptPathManager.ensure_cryptpath_setup()
     return list_dir(_CryptPathManager.pass_path())
+
+
+def read_password_data(password_name: str) -> list[bytes]:
+    """Read a psasword file and split the lines."""
+    return read_binary_file(get_password_path(password_name)).split()
+
+
+def append_password_data(password_name, password_data: bytes) -> None:
+    """Append a password data to the corresponding file."""
+    write_to_binary_file(
+        file_name=get_password_path(password_name),
+        content=password_data,
+        append=True,
+    )

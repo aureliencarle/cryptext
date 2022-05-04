@@ -1,8 +1,10 @@
+"""Argument parser for cryptext."""
+
 import argparse
-from typing import List
 
 
-def parse_args():
+def parse_args() -> argparse.Namespace:
+    """Return the parsed command-line arguments of the program."""
     parser = argparse.ArgumentParser(description='')
     parser.add_argument(
         'session',
@@ -12,9 +14,6 @@ def parse_args():
         help='store the session name',
     )
     parser.add_argument(
-        '--label',
-        '-l',
-        nargs=1,
-        help='label name',
+        '--label', '-l', nargs=1, help='label name',
     )
     return parser.parse_args()
