@@ -10,7 +10,7 @@ from dataclasses import dataclass
 
 import cryptography
 
-from ..utils.hashing import Crypt
+from ..io.encrypter import Encrypter
 
 
 class InvalidPassword(Exception):
@@ -41,12 +41,15 @@ class PasswordData:
         return compact
 
 
+def generate_password_key(password: str) -> bytes:
+    return Encrypter.generate_hash_key(password)
+
 def encrypt_password(key: bytes, password_data: str) -> bytes:
-    Crypt.encrypt(key, password_data)
+    return Encrypter.encrypt(key, password_data)
 
 
 def decrypt_password(key: bytes, encoded_password_data: bytes) -> str:
     try:
-        return Crypt.decrypt(key, encoded_password_data)
+        return Encrypter.decrypt(key, encoded_password_data)
     except cryptography.fernet.InvalidToken:
         raise InvalidPassword("The password given is invalid.")

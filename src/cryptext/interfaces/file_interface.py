@@ -1,7 +1,7 @@
 """File interface. Handles read/write, creation and deletion of files."""
 
 from pathlib import Path
-from .file_io import (
+from ..io.file_io import (
     create_file,
     join,
     list_dir,

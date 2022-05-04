@@ -8,8 +8,9 @@ import cryptography
 import pyperclip
 
 from cryptext.password import PasswordData, PasswordDataIO
-from cryptext.interfaces import file_interface, file_io
-from cryptext.utils import DisplayConfig, Io, Crypt, Format
+from cryptext.interfaces import file_interface, password_interface
+from cryptext.utils import DisplayConfig, Io, Format
+from cryptext.io import file_io
 
 
 class PluginProtocol(Protocol):
@@ -116,7 +117,7 @@ class SessionEnvironment:
             return False
 
     def get_key(self, password: str) -> bytes:
-        return Crypt.generate_hash_key(password)
+        return password_interface.generate_password_key(password)
 
     def generate_path(self) -> str:
         return file_interface.get_password_path(self.name)
@@ -130,7 +131,9 @@ class SessionEnvironment:
     def recover_password_data(self):
         self.content.clear()
         for l in SessionEnvironment.read_password(self.generate_path()):
-            args = Crypt.decrypt(self.key, l).split(DisplayConfig.SEPARATOR)
+            args = password_interface.decrypt_password(self.key, l).split(
+                DisplayConfig.SEPARATOR
+            )
             if args:
                 p = PasswordData(*args)
                 self.content[p.label] = p
@@ -156,7 +159,7 @@ class SessionEnvironment:
     @staticmethod
     def write_password(file_name: str, key: bytes, text: str) -> None:
         """Write a password into the corresponding file (append)."""
-        byte_output = Crypt.encrypt(key, text)
+        byte_output = password_interface.encrypt_password(key, text)
         byte_output += '\n'.encode('utf-8')
         file_io.write_to_binary_file(
             file_name=file_name, content=byte_output, append=True,
