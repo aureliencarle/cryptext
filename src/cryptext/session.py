@@ -4,13 +4,16 @@
 import importlib
 from typing import Dict, List, Optional, Protocol
 
-import cryptography
 import pyperclip
 
 from cryptext.password import PasswordDataIO
-from cryptext.interfaces import (
-    password_interface,
+from cryptext.interfaces.user_interface import UserInterface
+from cryptext.interfaces.password_interface import (
     PasswordData,
+    InvalidPassword,
+    generate_password_key,
+    encrypt_password,
+    decrypt_password,
 )
 from cryptext.interfaces.file_interface import (
     list_passwords,
@@ -23,7 +26,7 @@ from cryptext.interfaces.file_interface import (
     read_password_data,
     append_password_data,
 )
-from cryptext.io.terminal_io import TerminalInterface, DisplayConfig, Format
+from cryptext.io.terminal_io import DisplayConfig, TerminalInterface
 
 
 class PluginProtocol(Protocol):
@@ -34,9 +37,10 @@ class PluginProtocol(Protocol):
 
 
 class SessionEnvironment:
-    def __init__(self, session_name=None):
+    def __init__(self, user_interface=UserInterface(), session_name=None):
         self.name: Optional[str] = None
-        self.prompt: str = DisplayConfig.PROMPT
+        self.user_interface = user_interface
+        self.prompt: str = DisplayConfig.prompt
         self.files: List[str] = list_passwords()
         self.plugins = list_plugins()
         self.key: bytes = None
@@ -123,17 +127,17 @@ class SessionEnvironment:
 
     def update(self, password: str) -> bool:
         try:
-            self.prompt = f'({Format.styled(self.name, "cyan", "bright")}) {DisplayConfig.PROMPT}'
+            self.prompt = self.user_interface.get_prompt(session=self.name)
             self.key = self.get_key(password)
             self.recover_password_data()
             return True
-        except cryptography.fernet.InvalidToken:
+        except InvalidPassword:
             self.name = None
             TerminalInterface.print(' -- wrong file key --')
             return False
 
     def get_key(self, password: str) -> bytes:
-        return password_interface.generate_password_key(password)
+        return generate_password_key(password)
 
     def generate_path(self) -> str:
         return get_password_path(self.name)
@@ -147,9 +151,7 @@ class SessionEnvironment:
     def recover_password_data(self):
         self.content.clear()
         for l in SessionEnvironment.read_password(self.generate_path()):
-            args = password_interface.decrypt_password(self.key, l).split(
-                DisplayConfig.SEPARATOR
-            )
+            args = decrypt_password(self.key, l).split(DisplayConfig.separator)
             if args:
                 p = PasswordData(*args)
                 self.content[p.label] = p
@@ -175,7 +177,7 @@ class SessionEnvironment:
     @staticmethod
     def write_password(password_name: str, key: bytes, text: str) -> None:
         """Write a password into the corresponding file (append)."""
-        byte_output = password_interface.encrypt_password(key, text)
+        byte_output = encrypt_password(key, text)
         byte_output += '\n'.encode('utf-8')
         append_password_data(
             password_name=password_name, password_data=byte_output

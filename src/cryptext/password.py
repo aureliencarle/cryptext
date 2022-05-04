@@ -40,7 +40,7 @@ class PasswordDataIO:
         if pass_data.passwd is None:
             PasswordDataIO.print_no_password_message()
             return
-        compact = DisplayConfig.SEPARATOR.join(
+        compact = DisplayConfig.separator.join(
             [
                 pass_data.label,
                 pass_data.url,
@@ -143,8 +143,8 @@ class PasswordDataIO:
         if n_trials <= 0:
             TerminalInterface.print('code not added !')
             return None
-        pas = getpass(' ' * DisplayConfig.INDENT + input_text)
-        cof = getpass(' ' * DisplayConfig.INDENT + confirm_text)
+        pas = getpass(' ' * DisplayConfig.indent_size + input_text)
+        cof = getpass(' ' * DisplayConfig.indent_size + confirm_text)
         if pas == cof:
             return pas
         else:

@@ -1,5 +1,6 @@
 """Interfaces for cryptext."""
 
+from .user_interface import UserInterface
 from .password_interface import (
     PasswordData,
     encrypt_password,
@@ -17,6 +18,7 @@ from .file_interface import (
 )
 
 __all__ = [
+    'UserInterface',
     'list_plugins',
     'list_passwords',
     'create_password',

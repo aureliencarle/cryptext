@@ -5,12 +5,15 @@ from cryptext.session import SessionEnvironment
 from cryptext.shell import Shell
 from cryptext.command_register import Register
 from cryptext.utils.arguments import parse_args
+from cryptext.interfaces import UserInterface
 
 
 def main():
 
     args = parse_args()
-    session = SessionEnvironment(args.session)
+    session = SessionEnvironment(
+        user_interface=UserInterface(), session_name=args.session
+    )
 
     if args.label:
         if args.label[0] in list(session.content.keys()):

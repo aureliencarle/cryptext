@@ -6,17 +6,17 @@ from colorama import Fore, Style
 
 
 class DisplayConfig:
-    SEPARATOR: str = '#netrisca#?!?#acsirten#'
-    PROMPT: str = 'cryptext > '
-    INDENT: int = 4
+    separator: str = '#netrisca#?!?#acsirten#'
+    prompt: str = 'cryptext > '
+    indent_size: int = 4
 
 
 class Format:
     @staticmethod
     def styled(text: str, color: str, style: str = 'normal') -> str:
         """Apply color special characters to a string"""
-        color_str = getattr(Fore, color.upper())
-        style_str = getattr(Style, style.upper())
+        color_str = getattr(Fore, color.upper()) if color else Fore.RESET
+        style_str = getattr(Style, style.upper()) if style else Style.NORMAL
         reset_str = Style.RESET_ALL
         return f'{color_str}{style_str}{text}{reset_str}'
 
@@ -37,7 +37,7 @@ class Format:
     def pretty_columns(
         lines: List[str],
         term_width: int = 80,
-        indent: int = DisplayConfig.INDENT,
+        indent: int = DisplayConfig.indent_size,
         pad: int = 5,
     ) -> str:
         """Generate a pretty string from a list of rows, aligning columns."""
@@ -73,7 +73,7 @@ class Format:
 class TerminalInterface:
     @staticmethod
     def print(
-        text: str = '', indent: str = DisplayConfig.INDENT, **kwargs
+        text: str = '', indent: str = DisplayConfig.indent_size, **kwargs
     ) -> None:
         """Print a text in the standard output"""
         TerminalInterface._print(' ' * indent + text, **kwargs)
@@ -81,7 +81,7 @@ class TerminalInterface:
     @staticmethod
     def input(
         text: str = '',
-        indent: str = DisplayConfig.INDENT,
+        indent: str = DisplayConfig.indent_size,
         silent: bool = False,
     ) -> None:
         """Ask an input to the user"""
