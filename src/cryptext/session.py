@@ -1,46 +1,35 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import os
+import importlib
+from typing import Dict, List, Optional, Protocol
+
+import cryptography
 import pyperclip
 
-import importlib
-import cryptography
-from typing import Dict, List, Protocol
-
 from cryptext.password import PasswordData, PasswordDataIO
-from cryptext.cryptpath import CRYPTPATH, PLUGPATH, PASSPATH
-
+from cryptext.interfaces import file_interface, file_io
 from cryptext.utils import DisplayConfig, Io, Crypt, Format
 
 
 class PluginProtocol(Protocol):
+    """Plugin protocol to define what a plugin should provide as interface."""
+
     import_session: str
     import_pass: List[PasswordData]
 
 
 class SessionEnvironment:
     def __init__(self, session_name=None):
-        self.set_default()
-        if session_name is not None:
-            self.start_session(session_name)
-
-    def set_default(
-        self,
-        crypt_path: str = os.path.join(CRYPTPATH, PASSPATH),
-        prompt: str = DisplayConfig.PROMPT,
-    ):
-        self.name: str = None
-        self.prompt: str = prompt
-        self.passpath: str = crypt_path
-        self.files: List[str] = os.listdir(self.passpath)
-        self.plugins = [
-            file
-            for file in os.listdir(os.path.join(CRYPTPATH, PLUGPATH))
-            if file != '__pycache__'
-        ]
+        self.name: Optional[str] = None
+        self.prompt: str = DisplayConfig.PROMPT
+        self.files: List[str] = file_interface.list_passwords()
+        self.plugins = file_interface.list_plugins()
         self.key: bytes = None
         self.content: Dict[str, PasswordData] = {}
+
+        if session_name is not None:
+            self.start_session(session_name)
 
     def start_session(self, session_name: str = None) -> bool:
         """Start a new session."""
@@ -53,7 +42,7 @@ class SessionEnvironment:
     def close_session(self) -> bool:
         """Close current session"""
         self.save()
-        self.set_default()
+        self.__init__()
 
     def ensure_session(self, session_name: str) -> bool:
         """Ensure a new session is created if it does not exist"""
@@ -69,7 +58,7 @@ class SessionEnvironment:
     def plug_external(self, script_name: str = '') -> None:
         """Take from external script one value for session name and list of PassordData"""
         specification = importlib.util.spec_from_file_location(
-            script_name, os.path.join(CRYPTPATH, 'plugin', script_name + '.py')
+            script_name, file_interface.get_plugin_path(script_name),
         )
         external_module = importlib.util.module_from_spec(specification)
         specification.loader.exec_module(external_module)
@@ -84,15 +73,15 @@ class SessionEnvironment:
         self, session_name: str, ask_confirmation: bool = True
     ) -> bool:
         """Create a new session"""
-        file = os.path.join(self.passpath, session_name)
-        if not os.path.exists(file):
+        file = file_interface.get_password_path(session_name)
+        if not file_interface.exists(file):
             confirm = not ask_confirmation or Io.ask_user_confirmation(
                 'File does not exist. Create it ?', default_str='y'
             )
             if confirm:
-                with open(file, 'w'):
-                    self.files.append(session_name)
-                    return True
+                file_interface.create_password(session_name)
+                self.files.append(session_name)
+                return True
             Io.print('New file cannot be created')
             return False
         Io.print('File already exist')
@@ -108,11 +97,10 @@ class SessionEnvironment:
         PasswordDataIO.print(self.content[key], is_secure=is_secure)
 
     def destroy(self, name: str) -> None:
-        pathfile = self.passpath + '/' + name
-        if os.path.exists(pathfile):
+        if file_interface.password_exists(name):
             self.files.remove(name)
-            os.remove(pathfile)
-            self.files = os.listdir(os.path.join(CRYPTPATH, PASSPATH))
+            file_interface.remove_password(name)
+            self.files = file_interface.list_passwords()
         else:
             Io.print('File does not exist')
 
@@ -131,7 +119,7 @@ class SessionEnvironment:
         return Crypt.generate_hash_key(password)
 
     def generate_path(self) -> str:
-        return os.path.join(self.passpath, self.name)
+        return file_interface.get_password_path(self.name)
 
     def add_password(self, password: PasswordData):
         if password.label not in self.content.keys():
@@ -141,18 +129,17 @@ class SessionEnvironment:
 
     def recover_password_data(self):
         self.content.clear()
-        for l in Crypt.read(self.generate_path()):
+        for l in SessionEnvironment.read_password(self.generate_path()):
             args = Crypt.decrypt(self.key, l).split(DisplayConfig.SEPARATOR)
             if args:
                 p = PasswordData(*args)
                 self.content[p.label] = p
 
     def save(self):
-        file = os.path.join(self.passpath, self.name)
-        open(file, 'w').close()
+        file = self.generate_path()
         for k in self.content.keys():
             writable_pass = PasswordDataIO.convert(self.content[k])
-            PasswordDataIO.write(self.generate_path(), self.key, writable_pass)
+            SessionEnvironment.write_password(file, self.key, writable_pass)
 
     def log(self):
         if self.name is None:
@@ -160,3 +147,17 @@ class SessionEnvironment:
         else:
             message = f'# Session loaded : {self.name}\n'
         Io.print(message)
+
+    @staticmethod
+    def read_password(file_name: str) -> list[bytes]:
+        """Read the content of a password file."""
+        return file_io.read_binary_file(file_name).split()
+
+    @staticmethod
+    def write_password(file_name: str, key: bytes, text: str) -> None:
+        """Write a password into the corresponding file (append)."""
+        byte_output = Crypt.encrypt(key, text)
+        byte_output += '\n'.encode('utf-8')
+        file_io.write_to_binary_file(
+            file_name=file_name, content=byte_output, append=True,
+        )
