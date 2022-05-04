@@ -8,7 +8,6 @@ from enum import Enum
 class LayoutConfig:
     """Define a layout configuration for cryptext."""
 
-    separator: str = '#netrisca#?!?#acsirten#'
     prompt: str = 'cryptext > '
     indent_size: int = 4
 

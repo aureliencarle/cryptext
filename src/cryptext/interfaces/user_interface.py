@@ -21,15 +21,15 @@ class UserInterface:
     layout_config: LayoutConfig = CryptextLayouts.DEFAULT.value
     theme: Theme = CryptextThemes.DEFAULT.value
 
-    def print(self, text: str) -> None:
+    def print(self, text: str, **kwargs) -> None:
         """Print text in the terminal using the base style."""
-        UserInterface.print_with_style(text=text, item=self.theme['base'])
+        UserInterface.print_with_style(text=text, item=self.theme['base'], **kwargs)
 
     @staticmethod
-    def print_with_style(text: Union[str, list[str]], item: ThemeItem) -> None:
+    def print_with_style(text: Union[str, list[str]], item: ThemeItem, **kwargs) -> None:
         """Print a string or list of strings applying a given style"""
         formatted_text = UserInterface.apply_theme_item(text, item)
-        TerminalInterface.print(formatted_text)
+        TerminalInterface.print(formatted_text, **kwargs)
 
     def info(self, text: str) -> None:
         """Print an info in the terminal."""

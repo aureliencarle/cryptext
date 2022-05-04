@@ -6,14 +6,15 @@ from typing import Dict, List, Optional, Protocol
 
 import pyperclip
 
-from cryptext.password import PasswordDataIO
 from cryptext.interfaces.user_interface import UserInterface
 from cryptext.interfaces.password_interface import (
     PasswordData,
     InvalidPassword,
+    deserialize_password,
     generate_password_key,
     encrypt_password,
     decrypt_password,
+    serialize_password,
 )
 from cryptext.interfaces.file_interface import (
     list_passwords,
@@ -26,7 +27,7 @@ from cryptext.interfaces.file_interface import (
     read_password_data,
     append_password_data,
 )
-from cryptext.io.terminal_io import DisplayConfig
+from cryptext.password import PasswordDataIO
 
 
 class PluginProtocol(Protocol):
@@ -150,16 +151,16 @@ class SessionEnvironment:
 
     def recover_password_data(self):
         self.content.clear()
-        for l in SessionEnvironment.read_password(self.generate_path()):
-            args = decrypt_password(self.key, l).split(DisplayConfig.separator)
-            if args:
-                p = PasswordData(*args)
-                self.content[p.label] = p
+        for passwd in SessionEnvironment.read_password(self.generate_path()):
+            password_str = decrypt_password(self.key, passwd)
+            if password_str:
+                password = deserialize_password(password_str)
+                self.content[password.label] = password
 
     def save(self):
         file = self.generate_path()
-        for k in self.content.keys():
-            writable_pass = PasswordDataIO.convert(self.content[k])
+        for _, value in self.content.items():
+            writable_pass = serialize_password(value)
             SessionEnvironment.write_password(file, self.key, writable_pass)
 
     def log(self):

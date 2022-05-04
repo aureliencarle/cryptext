@@ -4,7 +4,7 @@
 from getpass import getpass
 from typing import List, Optional, Tuple
 
-from .io.terminal_io import DisplayConfig, TerminalInterface, Format
+from .io import TerminalInterface, DisplayConfig, Format
 from .interfaces.password_interface import PasswordData
 
 
@@ -34,22 +34,6 @@ class PasswordDataIO:
         )
         if is_secure:
             PasswordDataIO.secure_line('--- Mischief Managed! ---')
-
-    @staticmethod
-    def convert(pass_data: PasswordData) -> List:
-        if pass_data.passwd is None:
-            PasswordDataIO.print_no_password_message()
-            return
-        compact = DisplayConfig.separator.join(
-            [
-                pass_data.label,
-                pass_data.url,
-                pass_data.com,
-                pass_data.user,
-                pass_data.passwd,
-            ]
-        )
-        return compact
 
     @staticmethod
     def secure_line(final_message: str) -> None:
