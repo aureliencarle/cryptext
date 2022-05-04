@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from ..shell import Shell
-from ..utils import Io
+from ..io.terminal_io import TerminalInterface
 from ..password import PasswordDataIO
 
 
@@ -20,7 +20,9 @@ class Touch:
             password = PasswordDataIO.input(label=parameter)
             shell.session.add_password(password)
         except KeyboardInterrupt:
-            Io.print('KeybordInterrupt exception: Abort file creation')
+            TerminalInterface.print(
+                'KeybordInterrupt exception: Abort file creation'
+            )
 
     @staticmethod
     def complete(shell: Shell, text: str, line: str, begidx: str, endidx: str):
@@ -28,4 +30,6 @@ class Touch:
 
     @staticmethod
     def help(shell: Shell):
-        Io.print('Once in an active session, type \'touch <file_name>\'')
+        TerminalInterface.print(
+            'Once in an active session, type \'touch <file_name>\''
+        )

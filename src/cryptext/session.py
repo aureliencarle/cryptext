@@ -9,12 +9,21 @@ import pyperclip
 
 from cryptext.password import PasswordDataIO
 from cryptext.interfaces import (
-    file_interface,
     password_interface,
     PasswordData,
 )
-from cryptext.utils import DisplayConfig, Io, Format
-from cryptext.io import file_io
+from cryptext.interfaces.file_interface import (
+    list_passwords,
+    list_plugins,
+    get_password_path,
+    get_plugin_path,
+    password_exists,
+    create_password,
+    remove_password,
+    read_password_data,
+    append_password_data,
+)
+from cryptext.io.terminal_io import TerminalInterface, DisplayConfig, Format
 
 
 class PluginProtocol(Protocol):
@@ -28,8 +37,8 @@ class SessionEnvironment:
     def __init__(self, session_name=None):
         self.name: Optional[str] = None
         self.prompt: str = DisplayConfig.PROMPT
-        self.files: List[str] = file_interface.list_passwords()
-        self.plugins = file_interface.list_plugins()
+        self.files: List[str] = list_passwords()
+        self.plugins = list_plugins()
         self.key: bytes = None
         self.content: Dict[str, PasswordData] = {}
 
@@ -55,7 +64,7 @@ class SessionEnvironment:
             return False
         if session_name in self.files:
             return True
-        Io.print(' -- file not found --')
+        TerminalInterface.print(' -- file not found --')
         return self.create_session(
             session_name=session_name, ask_confirmation=True
         )
@@ -63,7 +72,7 @@ class SessionEnvironment:
     def plug_external(self, script_name: str = '') -> None:
         """Take from external script one value for session name and list of PassordData"""
         specification = importlib.util.spec_from_file_location(
-            script_name, file_interface.get_plugin_path(script_name),
+            script_name, get_plugin_path(script_name),
         )
         external_module = importlib.util.module_from_spec(specification)
         specification.loader.exec_module(external_module)
@@ -78,18 +87,21 @@ class SessionEnvironment:
         self, session_name: str, ask_confirmation: bool = True
     ) -> bool:
         """Create a new session"""
-        file = file_interface.get_password_path(session_name)
-        if not file_interface.exists(file):
-            confirm = not ask_confirmation or Io.ask_user_confirmation(
-                'File does not exist. Create it ?', default_str='y'
+        file = get_password_path(session_name)
+        if not password_exists(file):
+            confirm = (
+                not ask_confirmation
+                or TerminalInterface.ask_user_confirmation(
+                    'File does not exist. Create it ?', default_str='y'
+                )
             )
             if confirm:
-                file_interface.create_password(session_name)
+                create_password(session_name)
                 self.files.append(session_name)
                 return True
-            Io.print('New file cannot be created')
+            TerminalInterface.print('New file cannot be created')
             return False
-        Io.print('File already exist')
+        TerminalInterface.print('File already exists')
         return False
 
     def clipboard_copy(self, key: str) -> None:
@@ -102,12 +114,12 @@ class SessionEnvironment:
         PasswordDataIO.print(self.content[key], is_secure=is_secure)
 
     def destroy(self, name: str) -> None:
-        if file_interface.password_exists(name):
+        if password_exists(name):
             self.files.remove(name)
-            file_interface.remove_password(name)
-            self.files = file_interface.list_passwords()
+            remove_password(name)
+            self.files = list_passwords()
         else:
-            Io.print('File does not exist')
+            TerminalInterface.print('File does not exist')
 
     def update(self, password: str) -> bool:
         try:
@@ -117,20 +129,20 @@ class SessionEnvironment:
             return True
         except cryptography.fernet.InvalidToken:
             self.name = None
-            Io.print(' -- wrong file key --')
+            TerminalInterface.print(' -- wrong file key --')
             return False
 
     def get_key(self, password: str) -> bytes:
         return password_interface.generate_password_key(password)
 
     def generate_path(self) -> str:
-        return file_interface.get_password_path(self.name)
+        return get_password_path(self.name)
 
     def add_password(self, password: PasswordData):
         if password.label not in self.content.keys():
             self.content[password.label] = password
         else:
-            Io.print(' -- label already exist --')
+            TerminalInterface.print(' -- label already exist --')
 
     def recover_password_data(self):
         self.content.clear()
@@ -153,18 +165,18 @@ class SessionEnvironment:
             message = 'No session is loaded !'
         else:
             message = f'# Session loaded : {self.name}\n'
-        Io.print(message)
+        TerminalInterface.print(message)
 
     @staticmethod
-    def read_password(file_name: str) -> list[bytes]:
+    def read_password(password_name: str) -> list[bytes]:
         """Read the content of a password file."""
-        return file_io.read_binary_file(file_name).split()
+        return read_password_data(password_name)
 
     @staticmethod
-    def write_password(file_name: str, key: bytes, text: str) -> None:
+    def write_password(password_name: str, key: bytes, text: str) -> None:
         """Write a password into the corresponding file (append)."""
         byte_output = password_interface.encrypt_password(key, text)
         byte_output += '\n'.encode('utf-8')
-        file_io.write_to_binary_file(
-            file_name=file_name, content=byte_output, append=True,
+        append_password_data(
+            password_name=password_name, password_data=byte_output
         )

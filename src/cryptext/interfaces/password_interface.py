@@ -27,28 +27,19 @@ class PasswordData:
     user: str = 'captain madness'
     passwd: str = '1234'
 
-    @staticmethod
-    def compactify_to_str(pass_data: PasswordData, separator: str) -> str:
-        compact = separator.join(
-            [
-                pass_data.label,
-                pass_data.url,
-                pass_data.com,
-                pass_data.user,
-                pass_data.passwd,
-            ]
-        )
-        return compact
-
 
 def generate_password_key(password: str) -> bytes:
+    """Generate a new key for a password."""
     return Encrypter.generate_hash_key(password)
 
+
 def encrypt_password(key: bytes, password_data: str) -> bytes:
+    """Encrypt text to bytes using a key."""
     return Encrypter.encrypt(key, password_data)
 
 
 def decrypt_password(key: bytes, encoded_password_data: bytes) -> str:
+    """Decrypt bytes using a key."""
     try:
         return Encrypter.decrypt(key, encoded_password_data)
     except cryptography.fernet.InvalidToken:

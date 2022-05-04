@@ -12,6 +12,8 @@ from .file_interface import (
     list_passwords,
     create_password,
     remove_password,
+    read_password_data,
+    append_password_data,
 )
 
 __all__ = [
@@ -24,4 +26,6 @@ __all__ = [
     'PasswordData',
     'encrypt_password',
     'decrypt_password',
+    'read_password_data',
+    'append_password_data',
 ]

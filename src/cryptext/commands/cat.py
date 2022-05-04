@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from ..shell import Shell
-from ..utils import Io
+from ..io.terminal_io import TerminalInterface
 
 
 class Cat:
@@ -16,7 +16,7 @@ class Cat:
                 shell.session.print_content(parameter, secure)
 
         except IndexError:
-            Io.print('error with command see usage below :')
+            TerminalInterface.print('error with command see usage below :')
             Cat.help(shell)
 
     @staticmethod
@@ -29,4 +29,4 @@ class Cat:
 
     @staticmethod
     def help(shell: Shell):
-        Io.print('help :: show <label> [--no-secure]')
+        TerminalInterface.print('help :: show <label> [--no-secure]')

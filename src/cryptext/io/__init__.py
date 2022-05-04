@@ -19,6 +19,7 @@ from .file_io import (
     read_binary_file,
 )
 
+from .terminal_io import TerminalInterface, DisplayConfig, Format
 
 __all__ = [
     'Encrypter',
@@ -36,4 +37,7 @@ __all__ = [
     'ensure_directory',
     'write_to_binary_file',
     'read_binary_file',
+    'TerminalInterface',
+    'DisplayConfig',
+    'Format',
 ]
