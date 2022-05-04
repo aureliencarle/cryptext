@@ -102,7 +102,8 @@ class TerminalInterface:
         if default_str not in 'yn':
             raise (NameError("Default string should be 'y' or 'n'."))
         answer = (
-            TerminalInterface.input(f'{prompt} [y/n, default={default_str}] ') or default_str
+            TerminalInterface.input(f'{prompt} [y/n, default={default_str}] ')
+            or default_str
         )
         return 'y' == answer.lower()
 
