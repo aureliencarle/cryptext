@@ -76,7 +76,7 @@ def ensure_directory(dir_name: str) -> None:
 def remove_file(file_name: str) -> None:
     """Remove a file."""
     if not is_file(file_name):
-        raise (FileNotFoundError(f'File {file_name!r} does not exist.'))
+        raise FileNotFoundError(f'File {file_name!r} does not exist.')
     os.remove(file_name)
 
 

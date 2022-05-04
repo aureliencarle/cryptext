@@ -5,7 +5,7 @@ from getpass import getpass
 from dataclasses import dataclass
 from typing import List, Optional, Tuple
 
-from .utils import DisplayConfig, Crypt, Io, Format
+from .utils import DisplayConfig, Io, Format
 
 
 @dataclass
@@ -59,9 +59,6 @@ class PasswordDataIO:
             ]
         )
         return compact
-
-    def write(name: str, key: str, compact: List) -> None:
-        Crypt.write(name, key, compact)
 
     @staticmethod
     def secure_line(final_message: str) -> None:

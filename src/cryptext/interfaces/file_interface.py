@@ -1,7 +1,14 @@
 """File interface. Handles read/write, creation and deletion of files."""
 
 from pathlib import Path
-from .file_io import join, list_dir, ensure_directory, exists, remove_file
+from .file_io import (
+    create_file,
+    join,
+    list_dir,
+    ensure_directory,
+    exists,
+    remove_file,
+)
 
 
 class _CryptPathManager:
@@ -45,7 +52,7 @@ class _CryptPathManager:
 
 def password_exists(password_name: str) -> bool:
     """Tell if a password exist."""
-    return exists(_CryptPathManager.pass_path(password_name))
+    return exists(join(_CryptPathManager.pass_path(), password_name))
 
 
 def get_plugin_path(plugin_name: str) -> str:
@@ -58,9 +65,14 @@ def get_password_path(password_name: str) -> str:
     return join(_CryptPathManager.pass_path(), password_name)
 
 
+def create_password(password_name: str) -> None:
+    """Create a new password file."""
+    create_file(join(_CryptPathManager.pass_path(), password_name))
+
+
 def remove_password(password_name: str) -> None:
     """Remove a password file."""
-    remove_file(_CryptPathManager.pass_path(password_name))
+    remove_file(join(_CryptPathManager.pass_path(), password_name))
 
 
 def list_plugins() -> list[str]:

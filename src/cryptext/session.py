@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import pyperclip
-
 import importlib
-import cryptography
 from typing import Dict, List, Optional, Protocol
 
+import cryptography
+import pyperclip
+
 from cryptext.password import PasswordData, PasswordDataIO
-from cryptext.interfaces import file_interface
+from cryptext.interfaces import file_interface, file_io
 from cryptext.utils import DisplayConfig, Io, Crypt, Format
 
 
@@ -79,9 +79,9 @@ class SessionEnvironment:
                 'File does not exist. Create it ?', default_str='y'
             )
             if confirm:
-                with open(file, 'w'):
-                    self.files.append(session_name)
-                    return True
+                file_interface.create_password(session_name)
+                self.files.append(session_name)
+                return True
             Io.print('New file cannot be created')
             return False
         Io.print('File already exist')
@@ -129,7 +129,7 @@ class SessionEnvironment:
 
     def recover_password_data(self):
         self.content.clear()
-        for l in Crypt.read(self.generate_path()):
+        for l in SessionEnvironment.read_password(self.generate_path()):
             args = Crypt.decrypt(self.key, l).split(DisplayConfig.SEPARATOR)
             if args:
                 p = PasswordData(*args)
@@ -137,10 +137,9 @@ class SessionEnvironment:
 
     def save(self):
         file = self.generate_path()
-        open(file, 'w').close()
         for k in self.content.keys():
             writable_pass = PasswordDataIO.convert(self.content[k])
-            PasswordDataIO.write(file, self.key, writable_pass)
+            SessionEnvironment.write_password(file, self.key, writable_pass)
 
     def log(self):
         if self.name is None:
@@ -148,3 +147,17 @@ class SessionEnvironment:
         else:
             message = f'# Session loaded : {self.name}\n'
         Io.print(message)
+
+    @staticmethod
+    def read_password(file_name: str) -> list[bytes]:
+        """Read the content of a password file."""
+        return file_io.read_binary_file(file_name).split()
+
+    @staticmethod
+    def write_password(file_name: str, key: bytes, text: str) -> None:
+        """Write a password into the corresponding file (append)."""
+        byte_output = Crypt.encrypt(key, text)
+        byte_output += '\n'.encode('utf-8')
+        file_io.write_to_binary_file(
+            file_name=file_name, content=byte_output, append=True,
+        )
