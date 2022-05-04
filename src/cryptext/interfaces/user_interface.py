@@ -11,7 +11,6 @@ from ..config.theme import (
     CryptextThemes,
     Theme,
     ThemeItem,
-    get_final_theme_item,
 )
 
 
@@ -22,42 +21,64 @@ class UserInterface:
     layout_config: LayoutConfig = CryptextLayouts.DEFAULT.value
     theme: Theme = CryptextThemes.DEFAULT.value
 
-    def get_prompt(self, session: Optional[str] = None) -> str:
-        """Return the prompt after applying the theme"""
-        prompt = ''
-        if session:
-            prompt = ''.join(
-                [
-                    UserInterface.apply_theme_item('(', item=self.theme.text),
-                    UserInterface.apply_theme_item(
-                        session,
-                        item=get_final_theme_item(
-                            [self.theme.text, self.theme.session_name]
-                        ),
-                    ),
-                    UserInterface.apply_theme_item(') ', item=self.theme.text),
-                ]
-            )
-        return prompt + UserInterface.apply_theme_item(
-            self.layout_config.prompt,
-            item=get_final_theme_item([self.theme.text, self.theme.prompt]),
+    def print(self, text: str) -> None:
+        """Print text in the terminal using the base style."""
+        UserInterface.print_with_format(text=text, item=self.theme['base'])
+
+    def info(self, text: str) -> None:
+        """Print an info in the terminal."""
+        UserInterface.print_with_format(text=text, item=self.theme['info'])
+
+    def warning(self, text: str) -> None:
+        """Print a warning in the terminal."""
+        UserInterface.print_with_format(
+            text=f'Warning: {text}', item=self.theme['warning']
         )
 
-    def __enter__(self) -> UserInterface:
-        """Enter a new context: do nothing."""
-        return self
+    def error(self, text: str) -> None:
+        """Print an error in the terminal."""
+        UserInterface.print_with_format(
+            text=f'Error: {text}', item=self.theme['error']
+        )
 
-    def __exit__(self, *args) -> None:
-        """Exit a context, reset the format to user input."""
-        self.set_user_mode()
+    def get_prompt(self, session: Optional[str] = None) -> str:
+        """Return the prompt after applying the theme"""
+        session_prompt = ''
+        if session:
+            session_prompt = ''.join(
+                [
+                    UserInterface.apply_theme_item(
+                        '(', item=self.theme['base']
+                    ),
+                    UserInterface.apply_theme_item(
+                        session, item=self.theme['session_name']
+                    ),
+                    UserInterface.apply_theme_item(
+                        ') ', item=self.theme['base']
+                    ),
+                ]
+            )
+        default_prompt = UserInterface.apply_theme_item(
+            self.layout_config.prompt, item=self.theme['prompt'],
+        )
+        user_style = self.get_user_mode()
+        return session_prompt + default_prompt + user_style
 
-    def set_user_mode(self) -> None:
+    def ask_user_confirmation(self, prompt: str, default_str: str) -> bool:
+        """Ask a confirmation to the user and return the answer"""
+        default_str = default_str.lower()
+        if default_str not in 'yn':
+            raise NameError("Default string should be 'y' or 'n'.")
+        prompt = UserInterface.apply_theme_item(
+            f'{prompt} [y/n, default={default_str}] ', item=self.theme['base']
+        )
+        answer = TerminalInterface.input(prompt) or default_str
+        return 'y' == answer.lower()
+
+    def get_user_mode(self) -> str:
         """Reset the format and set it to the user input format."""
-        UserInterface.reset_format(item=self.theme.user_input)
-
-    @staticmethod
-    def reset_format(item: ThemeItem) -> None:
-        UserInterface.print_with_format('', item=item)
+        item = self.theme['user_input']
+        return Format.get_style(color=item.color, style=item.style)
 
     @staticmethod
     def apply_theme_item(text: str, item: ThemeItem) -> str:
@@ -67,8 +88,4 @@ class UserInterface:
     @staticmethod
     def print_with_format(text: str, item: ThemeItem) -> None:
         formatted_text = UserInterface.apply_theme_item(text, item)
-        TerminalInterface.print(formatted_text, end='')
-
-    @staticmethod
-    def new_line() -> None:
-        TerminalInterface.print('')
+        TerminalInterface.print(formatted_text)

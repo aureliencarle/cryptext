@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from typing import List
+from typing import List, Optional
 from colorama import Fore, Style
 
 
@@ -11,14 +11,40 @@ class DisplayConfig:
     indent_size: int = 4
 
 
+class InvalidColor(Exception):
+    """Raised when an invalid color string is given to Format."""
+
+
+class InvalidStyle(Exception):
+    """Raised when an invalid style string is given to Format."""
+
+
 class Format:
     @staticmethod
-    def styled(text: str, color: str, style: str = 'normal') -> str:
+    def get_style(
+        color: Optional[str] = None, style: Optional[str] = None
+    ) -> str:
+        """Return the string corresponding to a color and style."""
+        try:
+            color_str = getattr(Fore, color.upper()) if color else Fore.RESET
+        except AttributeError as err:
+            raise InvalidColor(f'Color {color!r} unknown') from err
+        try:
+            style_str = (
+                getattr(Style, style.upper()) if style else Style.NORMAL
+            )
+        except AttributeError as err:
+            raise InvalidStyle(f'Style {style!r} unknown') from err
+        return color_str + style_str
+
+    @staticmethod
+    def styled(
+        text: str, color: Optional[str] = None, style: Optional[str] = None
+    ) -> str:
         """Apply color special characters to a string"""
-        color_str = getattr(Fore, color.upper()) if color else Fore.RESET
-        style_str = getattr(Style, style.upper()) if style else Style.NORMAL
-        reset_str = Style.RESET_ALL
-        return f'{color_str}{style_str}{text}{reset_str}'
+        style = Format.get_style(color=color, style=style)
+        reset = Format.get_style()
+        return ''.join([style, text, reset])
 
     @staticmethod
     def styled_list(
@@ -94,18 +120,6 @@ class TerminalInterface:
     def delete_line() -> None:
         """Delete the last line printed"""
         TerminalInterface._print('\033[A\033[K\033[A')
-
-    @staticmethod
-    def ask_user_confirmation(prompt: str, default_str: str):
-        """Ask a confirmation to the user and return the answer"""
-        default_str = default_str.lower()
-        if default_str not in 'yn':
-            raise (NameError("Default string should be 'y' or 'n'."))
-        answer = (
-            TerminalInterface.input(f'{prompt} [y/n, default={default_str}] ')
-            or default_str
-        )
-        return 'y' == answer.lower()
 
     @staticmethod
     def _print(*args, **kwargs):

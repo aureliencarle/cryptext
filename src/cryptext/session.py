@@ -26,7 +26,7 @@ from cryptext.interfaces.file_interface import (
     read_password_data,
     append_password_data,
 )
-from cryptext.io.terminal_io import DisplayConfig, TerminalInterface
+from cryptext.io.terminal_io import DisplayConfig
 
 
 class PluginProtocol(Protocol):
@@ -40,7 +40,7 @@ class SessionEnvironment:
     def __init__(self, user_interface=UserInterface(), session_name=None):
         self.name: Optional[str] = None
         self.user_interface = user_interface
-        self.prompt: str = DisplayConfig.prompt
+        self.prompt: str = user_interface.get_prompt(session_name)
         self.files: List[str] = list_passwords()
         self.plugins = list_plugins()
         self.key: bytes = None
@@ -68,7 +68,7 @@ class SessionEnvironment:
             return False
         if session_name in self.files:
             return True
-        TerminalInterface.print(' -- file not found --')
+        self.user_interface.error('File not found')
         return self.create_session(
             session_name=session_name, ask_confirmation=True
         )
@@ -95,7 +95,7 @@ class SessionEnvironment:
         if not password_exists(file):
             confirm = (
                 not ask_confirmation
-                or TerminalInterface.ask_user_confirmation(
+                or self.user_interface.ask_user_confirmation(
                     'File does not exist. Create it ?', default_str='y'
                 )
             )
@@ -103,9 +103,9 @@ class SessionEnvironment:
                 create_password(session_name)
                 self.files.append(session_name)
                 return True
-            TerminalInterface.print('New file cannot be created')
+            self.user_interface.info('New file cannot be created')
             return False
-        TerminalInterface.print('File already exists')
+        self.user_interface.info('File already exists')
         return False
 
     def clipboard_copy(self, key: str) -> None:
@@ -123,7 +123,7 @@ class SessionEnvironment:
             remove_password(name)
             self.files = list_passwords()
         else:
-            TerminalInterface.print('File does not exist')
+            self.user_interface.error('File does not exist')
 
     def update(self, password: str) -> bool:
         try:
@@ -133,7 +133,7 @@ class SessionEnvironment:
             return True
         except InvalidPassword:
             self.name = None
-            TerminalInterface.print(' -- wrong file key --')
+            self.user_interface.error('Wrong file key')
             return False
 
     def get_key(self, password: str) -> bytes:
@@ -146,7 +146,7 @@ class SessionEnvironment:
         if password.label not in self.content.keys():
             self.content[password.label] = password
         else:
-            TerminalInterface.print(' -- label already exist --')
+            self.user_interface.error('Label already exists')
 
     def recover_password_data(self):
         self.content.clear()
@@ -167,7 +167,7 @@ class SessionEnvironment:
             message = 'No session is loaded !'
         else:
             message = f'# Session loaded : {self.name}\n'
-        TerminalInterface.print(message)
+        self.user_interface.info(message)
 
     @staticmethod
     def read_password(password_name: str) -> list[bytes]:

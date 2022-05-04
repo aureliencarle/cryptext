@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 from ..shell import Shell
-from ..io.terminal_io import TerminalInterface
 
 
 class Cat:
@@ -16,7 +15,9 @@ class Cat:
                 shell.session.print_content(parameter, secure)
 
         except IndexError:
-            TerminalInterface.print('error with command see usage below :')
+            shell.session.user_interface.error(
+                f'File {parameter!r} does not exist'
+            )
             Cat.help(shell)
 
     @staticmethod
@@ -29,4 +30,6 @@ class Cat:
 
     @staticmethod
     def help(shell: Shell):
-        TerminalInterface.print('help :: show <label> [--no-secure]')
+        shell.session.user_interface.print(
+            'help :: show <label> [--no-secure]'
+        )
