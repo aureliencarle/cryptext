@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 from ..shell import Shell
-from ..io.terminal_io import TerminalInterface
 
 
 class Rm:
@@ -28,4 +27,6 @@ class Rm:
 
     @staticmethod
     def help(shell: Shell):
-        TerminalInterface.print('To remove a directory type -r as option')
+        shell.session.user_interface.print(
+            'To remove a directory type -r as option'
+        )

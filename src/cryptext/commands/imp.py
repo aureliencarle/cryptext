@@ -2,14 +2,13 @@
 # -*- coding: utf-8 -*-
 
 from ..shell import Shell
-from ..io.terminal_io import TerminalInterface
 
 
 class Import:
     @staticmethod
     def do(shell: Shell, line: str):
         if not line:
-            Import.help(shell)
+            Import.help()
             return
         parameter, _ = shell.get_arguments(line)
         shell.session.plug_external(parameter)
@@ -24,4 +23,4 @@ class Import:
 
     @staticmethod
     def help(shell: Shell):
-        TerminalInterface.print('Need plug-in name')
+        shell.session.user_interface.print('import <plugin_name>')

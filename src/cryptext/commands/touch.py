@@ -2,8 +2,6 @@
 # -*- coding: utf-8 -*-
 
 from ..shell import Shell
-from ..io.terminal_io import TerminalInterface
-from ..password import PasswordDataIO
 
 
 class Touch:
@@ -17,11 +15,11 @@ class Touch:
             if not parameter:
                 Touch.help(shell)
                 return
-            password = PasswordDataIO.input(label=parameter)
+            password = shell.session.input_password_data(label=parameter)
             shell.session.add_password(password)
         except KeyboardInterrupt:
-            TerminalInterface.print(
-                'KeybordInterrupt exception: Abort file creation'
+            shell.session.user_interface.error(
+                'KeyboardInterrupt exception, abort file creation'
             )
 
     @staticmethod
@@ -30,6 +28,6 @@ class Touch:
 
     @staticmethod
     def help(shell: Shell):
-        TerminalInterface.print(
+        shell.session.user_interface.print(
             'Once in an active session, type \'touch <file_name>\''
         )

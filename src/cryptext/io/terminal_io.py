@@ -1,24 +1,46 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from typing import List
+from typing import List, Optional
 from colorama import Fore, Style
 
 
-class DisplayConfig:
-    SEPARATOR: str = '#netrisca#?!?#acsirten#'
-    PROMPT: str = 'cryptext > '
-    INDENT: int = 4
+class InvalidColor(Exception):
+    """Raised when an invalid color string is given to Format."""
+
+
+class InvalidStyle(Exception):
+    """Raised when an invalid style string is given to Format."""
 
 
 class Format:
+    """Apply color and style to strings."""
+
     @staticmethod
-    def styled(text: str, color: str, style: str = 'normal') -> str:
+    def get_style(
+        color: Optional[str] = None, style: Optional[str] = None
+    ) -> str:
+        """Return the string corresponding to a color and style."""
+        try:
+            color_str = getattr(Fore, color.upper()) if color else Fore.RESET
+        except AttributeError as err:
+            raise InvalidColor(f'Color {color!r} unknown') from err
+        try:
+            style_str = (
+                getattr(Style, style.upper()) if style else Style.NORMAL
+            )
+        except AttributeError as err:
+            raise InvalidStyle(f'Style {style!r} unknown') from err
+        return color_str + style_str
+
+    @staticmethod
+    def styled(
+        text: str, color: Optional[str] = None, style: Optional[str] = None
+    ) -> str:
         """Apply color special characters to a string"""
-        color_str = getattr(Fore, color.upper())
-        style_str = getattr(Style, style.upper())
-        reset_str = Style.RESET_ALL
-        return f'{color_str}{style_str}{text}{reset_str}'
+        style = Format.get_style(color=color, style=style)
+        reset = Format.get_style()
+        return ''.join([style, text, reset])
 
     @staticmethod
     def styled_list(
@@ -35,10 +57,7 @@ class Format:
 
     @staticmethod
     def pretty_columns(
-        lines: List[str],
-        term_width: int = 80,
-        indent: int = DisplayConfig.INDENT,
-        pad: int = 5,
+        lines: List[str], indent: str = '', term_width: int = 80, pad: int = 5,
     ) -> str:
         """Generate a pretty string from a list of rows, aligning columns."""
         n_lines = len(lines)
@@ -46,7 +65,7 @@ class Format:
             return ''
 
         col_width = max(len(line) for line in lines)
-        n_cols = int((term_width + pad - indent) / (col_width + pad))
+        n_cols = int((term_width + pad - len(indent)) / (col_width + pad))
         n_cols = min(n_lines, max(1, n_cols))
 
         col_len = int(n_lines / n_cols) + (0 if n_lines % n_cols == 0 else 1)
@@ -63,7 +82,7 @@ class Format:
 
         return '\n'.join(
             [
-                ' ' * indent
+                indent
                 + (' ' * pad).join(line.ljust(col_width) for line in row)
                 for row in rows
             ]
@@ -72,20 +91,14 @@ class Format:
 
 class TerminalInterface:
     @staticmethod
-    def print(
-        text: str = '', indent: str = DisplayConfig.INDENT, **kwargs
-    ) -> None:
+    def print(text: str = '', indent: str = '', **kwargs) -> None:
         """Print a text in the standard output"""
-        TerminalInterface._print(' ' * indent + text, **kwargs)
+        TerminalInterface._print(indent + text, **kwargs)
 
     @staticmethod
-    def input(
-        text: str = '',
-        indent: str = DisplayConfig.INDENT,
-        silent: bool = False,
-    ) -> None:
+    def input(text: str = '', indent: str = '', silent: bool = False,) -> None:
         """Ask an input to the user"""
-        res = TerminalInterface._input(' ' * indent + text)
+        res = TerminalInterface._input(indent + text)
         if silent:
             TerminalInterface.delete_line()
         return res
@@ -94,17 +107,6 @@ class TerminalInterface:
     def delete_line() -> None:
         """Delete the last line printed"""
         TerminalInterface._print('\033[A\033[K\033[A')
-
-    @staticmethod
-    def ask_user_confirmation(prompt: str, default_str: str):
-        """Ask a confirmation to the user and return the answer"""
-        default_str = default_str.lower()
-        if default_str not in 'yn':
-            raise (NameError("Default string should be 'y' or 'n'."))
-        answer = (
-            TerminalInterface.input(f'{prompt} [y/n, default={default_str}] ') or default_str
-        )
-        return 'y' == answer.lower()
 
     @staticmethod
     def _print(*args, **kwargs):

@@ -13,6 +13,9 @@ import cryptography
 from ..io.encrypter import Encrypter
 
 
+PASSWORD_DATA_SEPARATOR = '#netrisca#?!?#acsirten#'
+
+
 class InvalidPassword(Exception):
     """Raised when an invalid password is given to decrypt a file."""
 
@@ -42,5 +45,24 @@ def decrypt_password(key: bytes, encoded_password_data: bytes) -> str:
     """Decrypt bytes using a key."""
     try:
         return Encrypter.decrypt(key, encoded_password_data)
-    except cryptography.fernet.InvalidToken:
-        raise InvalidPassword("The password given is invalid.")
+    except cryptography.fernet.InvalidToken as err:
+        raise InvalidPassword("The password given is invalid.") from err
+
+
+def serialize_password(password: PasswordData) -> str:
+    """Serialize a password into a string that can be stored."""
+    return PASSWORD_DATA_SEPARATOR.join(
+        [
+            password.label,
+            password.url,
+            password.com,
+            password.user,
+            password.passwd,
+        ]
+    )
+
+
+def deserialize_password(password: str) -> PasswordData:
+    """Deserialize a password from a string."""
+    args = password.split(PASSWORD_DATA_SEPARATOR)
+    return PasswordData(*args)
